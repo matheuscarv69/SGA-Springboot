@@ -7,11 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
-@Data
+//@Data
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Entity
 @Table(name = "chamado")
 public class Chamado {
@@ -31,10 +32,10 @@ public class Chamado {
     private TipoChamado tipo;
 
     @Column
-    private Date dataInico;
+    private LocalDate dataInicio;
 
     @Column
-    private Date dataFinal;
+    private LocalDate dataFinal;
 
     @Column
     private Character bloco;
@@ -45,11 +46,114 @@ public class Chamado {
     @Column
     private StatusChamado status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "requerente_id")
     private Usuario requerente;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "tecnico_id")
     private Usuario tecnico;
+
+    public Chamado() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public TipoChamado getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoChamado tipo) {
+        this.tipo = tipo;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDate getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(LocalDate dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public Character getBloco() {
+        return bloco;
+    }
+
+    public void setBloco(Character bloco) {
+        this.bloco = bloco;
+    }
+
+    public Integer getSala() {
+        return sala;
+    }
+
+    public void setSala(Integer sala) {
+        this.sala = sala;
+    }
+
+    public StatusChamado getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusChamado status) {
+        this.status = status;
+    }
+
+    public Usuario getRequerente() {
+        return requerente;
+    }
+
+    public void setRequerente(Usuario requerente) {
+        this.requerente = requerente;
+    }
+
+    public Usuario getTecnico() {
+        return tecnico;
+    }
+
+    public void setTecnico(Usuario tecnico) {
+        this.tecnico = tecnico;
+    }
+
+    @Override
+    public String toString() {
+        return "Chamado{" +
+                "id=" + id +
+                ", dataInicio=" + dataInicio +
+                ", bloco=" + bloco +
+                ", sala=" + sala +
+                ", requerente=" + requerente +
+                ", tecnico=" + tecnico +
+                '}';
+    }
 }
