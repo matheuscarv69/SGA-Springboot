@@ -1,5 +1,6 @@
 package io.github.matheuscarv69.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.*;
@@ -21,11 +22,11 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public Usuario(String matricula, String nome, boolean admin, boolean tec) {
+    public Usuario(String matricula, String nome, boolean admin, boolean tecn) {
         this.matricula = matricula;
         this.nome = nome;
         this.admin = admin;
-        this.tec = tec;
+        this.tecn = tecn;
     }
 
     @Column(name = "matricula", length = 12)
@@ -50,13 +51,15 @@ public class Usuario {
     private boolean admin;
 
     @Column
-    private boolean tec;
+    private boolean tecn;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "requerente", fetch = FetchType.LAZY)
     private Set<Chamado> chamadosReq;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tecnico", fetch = FetchType.LAZY)
-    private Set<Chamado> chamadosTec;
+    private Set<Chamado> chamadosTecn;
 
     public Usuario() {
     }
@@ -125,12 +128,12 @@ public class Usuario {
         this.admin = admin;
     }
 
-    public boolean isTec() {
-        return tec;
+    public boolean isTecn() {
+        return tecn;
     }
 
-    public void setTec(boolean tec) {
-        this.tec = tec;
+    public void setTecn(boolean tecn) {
+        this.tecn = tecn;
     }
 
     public Set<Chamado> getChamadosReq() {
@@ -141,12 +144,12 @@ public class Usuario {
         this.chamadosReq = chamadosReq;
     }
 
-    public Set<Chamado> getChamadosTec() {
-        return chamadosTec;
+    public Set<Chamado> getChamadosTecn() {
+        return chamadosTecn;
     }
 
-    public void setChamadosTec(Set<Chamado> chamadosTec) {
-        this.chamadosTec = chamadosTec;
+    public void setChamadosTecn(Set<Chamado> chamadosTecn) {
+        this.chamadosTecn = chamadosTecn;
     }
 
     @Override

@@ -22,7 +22,7 @@ public class Chamado {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "titulo", length = 30)
+    @Column(name = "titulo", length = 40)
     private String titulo;
 
     @Column
@@ -149,11 +149,9 @@ public class Chamado {
     public String toString() {
         return "Chamado{" +
                 "id=" + id +
-                ", dataInicio=" + dataInicio +
-                ", bloco=" + bloco +
-                ", sala=" + sala +
-                ", requerente=" + requerente +
-                ", tecnico=" + tecnico +
+                ", titulo=" + titulo +
+                ", requerente=" + requerente.getId() +
+                ", tecnico=" + tecnico.getId() +
                 '}';
     }
 }
