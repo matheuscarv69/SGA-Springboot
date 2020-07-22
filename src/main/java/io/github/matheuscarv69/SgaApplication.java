@@ -16,39 +16,6 @@ import java.util.List;
 @SpringBootApplication
 public class SgaApplication {
 
-    @Bean
-    public CommandLineRunner commandLineRunner(@Autowired UsuarioRepository repository, @Autowired ChamadoRepository chamadoRepository){
-        return args -> {
-            Usuario user = new Usuario("Arthur");
-            Usuario tecn = new Usuario("Matheus");
-
-            tecn.setTecn(true);
-
-            repository.save(user);
-            repository.save(tecn);
-
-            Chamado c = new Chamado();
-            c.setRequerente(user);
-            c.setTecnico(tecn);
-            c.setTitulo("quebrado");
-
-            Chamado d = new Chamado();
-            d.setRequerente(user);
-            d.setTecnico(tecn);
-            d.setTitulo("pao");
-
-            Chamado e = new Chamado();
-            e.setRequerente(tecn);
-            e.setTitulo("Quadro");
-
-
-            chamadoRepository.save(c);
-            chamadoRepository.save(d);
-            chamadoRepository.save(e);
-
-        };
-
-    }
 
     public static void main(String[] args) {
 

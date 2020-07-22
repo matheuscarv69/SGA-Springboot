@@ -2,13 +2,15 @@ package io.github.matheuscarv69.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
-//@Data
+@Data
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -17,17 +19,6 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
-
-    public Usuario(String nome) {
-        this.nome = nome;
-    }
-
-    public Usuario(String matricula, String nome, boolean admin, boolean tecn) {
-        this.matricula = matricula;
-        this.nome = nome;
-        this.admin = admin;
-        this.tecn = tecn;
-    }
 
     @Column(name = "matricula", length = 12)
     private String matricula;
@@ -60,97 +51,6 @@ public class Usuario {
     @JsonIgnore
     @OneToMany(mappedBy = "tecnico", fetch = FetchType.LAZY)
     private Set<Chamado> chamadosTecn;
-
-    public Usuario() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getMatricula() {
-        return matricula;
-    }
-
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isTecn() {
-        return tecn;
-    }
-
-    public void setTecn(boolean tecn) {
-        this.tecn = tecn;
-    }
-
-    public Set<Chamado> getChamadosReq() {
-        return chamadosReq;
-    }
-
-    public void setChamadosReq(Set<Chamado> chamadosReq) {
-        this.chamadosReq = chamadosReq;
-    }
-
-    public Set<Chamado> getChamadosTecn() {
-        return chamadosTecn;
-    }
-
-    public void setChamadosTecn(Set<Chamado> chamadosTecn) {
-        this.chamadosTecn = chamadosTecn;
-    }
 
     @Override
     public String toString() {

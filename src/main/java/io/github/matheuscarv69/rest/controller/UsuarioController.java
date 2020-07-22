@@ -26,15 +26,6 @@ public class UsuarioController {
         this.repository = usuarioRepository;
     }
 
-    @GetMapping("{id}") // busca um user por id
-    public Usuario getUsuarioById(@PathVariable("id") Integer id) {
-
-        return repository
-                .findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
-    }
-
     @PostMapping // salva um user
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario save(@RequestBody Usuario usuario) {
@@ -68,6 +59,71 @@ public class UsuarioController {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado. "));
     }
 
+    @GetMapping("{id}") // busca um user por id
+    public Usuario getUsuarioById(@PathVariable("id") Integer id) {
+
+        return repository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+    }
+
+    @GetMapping("/tecn")
+    public List<Usuario> findTecnicos() {
+        List<Usuario> list = repository.findTecnicos();
+
+        if (list.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum técnico cadastrado.");
+        }
+
+        return list;
+    }
+
+    @GetMapping("/admin")
+    public List<Usuario> findAdministradores() {
+        List<Usuario> list = repository.findAdministradores();
+
+        if (list.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum administrador cadastrado.");
+        }
+
+        return list;
+    }
+
+    @PutMapping("/admin/setTecn/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setTecn(@PathVariable("id") Integer id, @RequestBody Usuario tecn) {
+
+        repository.findById(id)
+                .map(usuario -> {
+                    if (usuario.isTecn() && tecn.isTecn()) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já é técnico.");
+                    }
+                    usuario.setTecn(tecn.isTecn());
+                    repository.save(usuario);
+
+                    return usuario;
+                }).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+    }
+
+    @PutMapping("/admin/setAdmin/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setAdmin(@PathVariable("id") Integer id, @RequestBody Usuario admin) {
+
+        repository.findById(id)
+                .map(usuario -> {
+                    if (usuario.isAdmin() && admin.isAdmin()) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já é administrador.");
+                    }
+                    usuario.setAdmin(admin.isAdmin());
+                    repository.save(usuario);
+
+                    return usuario;
+                }).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+    }
+
     @GetMapping("/chamadosReq/{id}") // busca os chamados que um user fez
     public Set<Chamado> findChamadosReq(@PathVariable("id") Integer id) {
 
@@ -91,7 +147,7 @@ public class UsuarioController {
             user = repository.findUsuarioFetchChamadosTecn(user.getId());
             return user.getChamadosTecn();
         } else
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Usuário não é técnico.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
 
     }
 
@@ -108,4 +164,5 @@ public class UsuarioController {
 
         return repository.findAll(example);
     }
+
 }
