@@ -3,6 +3,7 @@ package io.github.matheuscarv69.rest.controller;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
+import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class UsuarioController {
                     repository.save(usuario);
                     return usuarioExistente;
                 }).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                        new UsuarioNaoEncontradoException());
 
     }
 
@@ -56,7 +57,7 @@ public class UsuarioController {
                     repository.delete(usuarioExistente);
                     return usuarioExistente;
                 }).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado. "));
+                        new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("{id}") // busca um user por id
@@ -65,7 +66,7 @@ public class UsuarioController {
         return repository
                 .findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                        new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("/tecn")
@@ -104,7 +105,7 @@ public class UsuarioController {
 
                     return usuario;
                 }).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                        new UsuarioNaoEncontradoException());
     }
 
     @PutMapping("/admin/setAdmin/{id}")
@@ -121,7 +122,7 @@ public class UsuarioController {
 
                     return usuario;
                 }).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                     new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("/chamadosReq/{id}") // busca os chamados que um user fez
@@ -129,7 +130,7 @@ public class UsuarioController {
 
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                        new UsuarioNaoEncontradoException());
 
         user = repository.findUsuarioFetchChamadosReq(user.getId());
 
@@ -141,7 +142,7 @@ public class UsuarioController {
 
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                        new UsuarioNaoEncontradoException());
 
         if (user.isTecn()) {
             user = repository.findUsuarioFetchChamadosTecn(user.getId());

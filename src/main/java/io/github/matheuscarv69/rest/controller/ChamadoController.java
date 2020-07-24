@@ -2,6 +2,7 @@ package io.github.matheuscarv69.rest.controller;
 
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
+import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.rest.dto.AtualizacaoStatusChamadoDTO;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
@@ -37,7 +38,7 @@ public class ChamadoController {
                 .buscarChamadoPorId(id)
                 .map(chamado -> converter(chamado))
                 .orElseThrow(() ->
-                        new ResponseStatusException(NOT_FOUND, "Chamado não encontrado."));
+                        new ChamadoNaoEncontradoException());
 
     }
 
