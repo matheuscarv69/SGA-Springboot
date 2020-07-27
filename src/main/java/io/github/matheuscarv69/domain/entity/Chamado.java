@@ -54,13 +54,13 @@ public class Chamado {
     @JoinColumn(name = "tecnico_id")
     private Usuario tecnico;
 
-    @Override
-    public String toString() {
-        return "Chamado{" +
-                "id=" + id +
-                ", titulo=" + titulo +
-                ", requerente=" + requerente.getId() +
-                ", tecnico=" + tecnico.getId() +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Chamado{" +
+//                "id=" + id +
+//                ", titulo=" + titulo +
+//                ", requerente=" + requerente.getId() +
+//                ", tecnico=" + tecnico.getId() +
+//                '}';
+//    }
 }

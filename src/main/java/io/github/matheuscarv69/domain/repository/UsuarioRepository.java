@@ -13,10 +13,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Usuario findByMatricula(String nome); //busca um usuario pela matricula
 
-    @Query(value = "select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
+    @Query("select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
     Usuario findUsuarioFetchChamadosReq(@Param("id") Integer id);
 
-    @Query(value = "select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
+    @Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
     Usuario findUsuarioFetchChamadosTecn(@Param("id") Integer id);
 
     @Query(value = "SELECT * FROM USUARIO WHERE TECN = TRUE", nativeQuery = true) //busca tecnicos

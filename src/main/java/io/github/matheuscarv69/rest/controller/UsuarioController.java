@@ -9,13 +9,9 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import sun.rmi.transport.ObjectTable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -35,7 +31,7 @@ public class UsuarioController {
 
     @PutMapping("{id}") // atualiza um user
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable("id") Integer id, @RequestBody Usuario usuario) {
+    public void update(@PathVariable Integer id, @RequestBody Usuario usuario) {
 
         repository
                 .findById(id)
@@ -44,24 +40,24 @@ public class UsuarioController {
                     repository.save(usuario);
                     return usuarioExistente;
                 }).orElseThrow(() ->
-                        new UsuarioNaoEncontradoException());
+                new UsuarioNaoEncontradoException());
 
     }
 
     @DeleteMapping("{id}") // deleta um user
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") Integer id) {
+    public void delete(@PathVariable Integer id) {
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
                     repository.delete(usuarioExistente);
                     return usuarioExistente;
                 }).orElseThrow(() ->
-                        new UsuarioNaoEncontradoException());
+                new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("{id}") // busca um user por id
-    public Usuario getUsuarioById(@PathVariable("id") Integer id) {
+    public Usuario getUsuarioById(@PathVariable Integer id) {
 
         return repository
                 .findById(id)
@@ -93,7 +89,7 @@ public class UsuarioController {
 
     @PutMapping("/admin/setTecn/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setTecn(@PathVariable("id") Integer id, @RequestBody Usuario tecn) {
+    public void setTecn(@PathVariable Integer id, @RequestBody Usuario tecn) {
 
         repository.findById(id)
                 .map(usuario -> {
@@ -105,12 +101,12 @@ public class UsuarioController {
 
                     return usuario;
                 }).orElseThrow(() ->
-                        new UsuarioNaoEncontradoException());
+                new UsuarioNaoEncontradoException());
     }
 
     @PutMapping("/admin/setAdmin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setAdmin(@PathVariable("id") Integer id, @RequestBody Usuario admin) {
+    public void setAdmin(@PathVariable Integer id, @RequestBody Usuario admin) {
 
         repository.findById(id)
                 .map(usuario -> {
@@ -122,12 +118,11 @@ public class UsuarioController {
 
                     return usuario;
                 }).orElseThrow(() ->
-                     new UsuarioNaoEncontradoException());
+                new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("/chamadosReq/{id}") // busca os chamados que um user fez
-    public Set<Chamado> findChamadosReq(@PathVariable("id") Integer id) {
-
+    public Set<Chamado> findChamadosReq(@PathVariable Integer id) {
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->
                         new UsuarioNaoEncontradoException());
@@ -138,7 +133,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
-    public Set<Chamado> findChamadosTecn(@PathVariable("id") Integer id) {
+    public Set<Chamado> findChamadosTecn(@PathVariable Integer id) {
 
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->

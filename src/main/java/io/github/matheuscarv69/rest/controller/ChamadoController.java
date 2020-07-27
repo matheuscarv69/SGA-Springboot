@@ -3,17 +3,18 @@ package io.github.matheuscarv69.rest.controller;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
-import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.rest.dto.AtualizacaoStatusChamadoDTO;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping("api/chamados")
@@ -32,7 +33,7 @@ public class ChamadoController {
         return chamado.getId();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}") // busca um chamado por id
     public InformacoesChamadoDTO getById(@PathVariable("id") Integer id) {
         return service
                 .buscarChamadoPorId(id)
@@ -42,15 +43,47 @@ public class ChamadoController {
 
     }
 
-   @PatchMapping("{id}") // patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
-   @ResponseStatus(NO_CONTENT)
-   public void updateStatus(@PathVariable("id") Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto){
+//    @GetMapping // busca todos os chamados
+//    public List<InformacoesChamadoDTO> getAll() {
+//        List<Chamado> list = service.buscarTodos();
+//        List<InformacoesChamadoDTO> list2 = new ArrayList<>();
+//
+//        for(Chamado c : list){
+//            list2.add(converter(c));
+//        }
+//
+//        return list2;
+//    }
+
+    @GetMapping // busca por parametro e todos
+    public List<InformacoesChamadoDTO> find(Chamado filtro) {
+        List<Chamado> list = service.buscarPorPar(filtro);
+
+        List<InformacoesChamadoDTO> list2 = new ArrayList<>();
+
+        for(Chamado c : list){
+            list2.add(converter(c));
+        }
+
+        return list2;
+    }
+
+
+    @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @ResponseStatus(NO_CONTENT)
+    public void updateStatus(@PathVariable("id") Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
 
         String novoStatus = dto.getNovoStatus();
 
         service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
 
-   }
+    }
+
+    @DeleteMapping("{id}") // deleta um chamado pelo id
+    @ResponseStatus(NO_CONTENT)
+    public void delete(@PathVariable Integer id) {
+        service.excluir(id);
+    }
 
     private InformacoesChamadoDTO converter(Chamado chamado) {
 
@@ -64,10 +97,10 @@ public class ChamadoController {
             dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
-        if(chamado.getTecnico() == null){
+        if (chamado.getTecnico() == null) {
             nomeTecn = "Técnico não atribuído ao chamado.";
             matriculaTecn = "";
-        }else{
+        } else {
             nomeTecn = chamado.getTecnico().getNome();
             matriculaTecn = chamado.getTecnico().getMatricula();
         }
@@ -75,7 +108,7 @@ public class ChamadoController {
         return InformacoesChamadoDTO
                 .builder()
                 .id(chamado.getId())
-                .nome(chamado.getRequerente().getNome())
+                .requerente(chamado.getRequerente().getNome())
                 .matricula(chamado.getRequerente().getMatricula())
                 .titulo(chamado.getTitulo())
                 .descricao(chamado.getDescricao())

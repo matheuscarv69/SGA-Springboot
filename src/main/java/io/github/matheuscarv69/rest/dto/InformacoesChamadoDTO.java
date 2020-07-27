@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class InformacoesChamadoDTO {
 
     private Integer id;
-    private String nome;
+    private String requerente;
     private String matricula;
     private String titulo;
     private String descricao;

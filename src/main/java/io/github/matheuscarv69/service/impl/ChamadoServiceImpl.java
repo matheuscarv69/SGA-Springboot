@@ -9,12 +9,16 @@ import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
+import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,7 +47,6 @@ public class ChamadoServiceImpl implements ChamadoService {
         chamado.setDataInicio(LocalDate.now());
         chamado.setStatus(StatusChamado.PENDENTE);
 
-
         repository.save(chamado);
 
         return chamado;
@@ -56,6 +59,25 @@ public class ChamadoServiceImpl implements ChamadoService {
     }
 
     @Override
+    public List<Chamado> buscarTodos() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<Chamado> buscarPorPar(Chamado filtro) {
+
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Example example = Example.of(filtro,matcher);
+
+        return repository.findAll(example);
+    }
+
+
+    @Override
     @Transactional
     public void atualizaStatus(Integer id, StatusChamado statusChamado) {
         repository
@@ -66,4 +88,16 @@ public class ChamadoServiceImpl implements ChamadoService {
                     return c;
                 }).orElseThrow(() -> new ChamadoNaoEncontradoException());
     }
+
+    @Override
+    @Transactional
+    public void excluir(Integer id) {
+        repository.findById(id)
+                .map(c ->{
+                    repository.delete(c);
+                    return c;
+                }).orElseThrow(() -> new ChamadoNaoEncontradoException());
+    }
+
+
 }

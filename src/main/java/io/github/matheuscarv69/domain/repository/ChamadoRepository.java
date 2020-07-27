@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ChamadoRepository extends JpaRepository<Chamado, Integer> {
 
-
-
     List<Chamado> findByRequerente(Usuario usuario); //retorna os chamados feito pelo requerente
 
     List<Chamado> findByTecnico(Usuario usuario); // retorna os chamados de um tecnico
