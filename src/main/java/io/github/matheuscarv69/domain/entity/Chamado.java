@@ -22,7 +22,7 @@ public class Chamado {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "titulo", length = 40)
+    @Column(name = "titulo", length = 30)
     private String titulo;
 
     @Column

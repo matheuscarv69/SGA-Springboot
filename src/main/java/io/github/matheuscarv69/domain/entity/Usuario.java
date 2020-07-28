@@ -21,16 +21,16 @@ public class Usuario {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "matricula", length = 12)
-    private String matricula;
-
     @Column(name = "nome", length = 100)
     private String nome;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "matricula", length = 13)
+    private String matricula;
+
+    @Column(name = "email", length = 50)
     private String email;
 
-    @Column(name = "phone", length = 11)
+    @Column(name = "phone", length = 15)
     private String phone;
 
     @Column

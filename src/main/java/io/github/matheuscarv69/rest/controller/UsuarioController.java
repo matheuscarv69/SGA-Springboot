@@ -74,7 +74,7 @@ public class UsuarioController {
         List<Usuario> list = repository.findTecnicos();
 
         if (list.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum técnico cadastrado.");
+            throw new UsuarioNaoEncontradoException("Nenhum técnico cadastrado");
         }
 
         return list;
@@ -85,7 +85,7 @@ public class UsuarioController {
         List<Usuario> list = repository.findAdministradores();
 
         if (list.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum administrador cadastrado.");
+            throw new UsuarioNaoEncontradoException("Nenhum administrador cadastrado");
         }
 
         return list;
@@ -98,7 +98,7 @@ public class UsuarioController {
         repository.findById(id)
                 .map(usuario -> {
                     if (usuario.isTecn() && tecn.isTecn()) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já é técnico.");
+                        throw new RegraNegocioException("Usuário já é técnico");
                     }
                     usuario.setTecn(tecn.isTecn());
                     repository.save(usuario);
@@ -115,7 +115,7 @@ public class UsuarioController {
         repository.findById(id)
                 .map(usuario -> {
                     if (usuario.isAdmin() && admin.isAdmin()) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já é administrador.");
+                        throw new RegraNegocioException("Usuário já é administrador");
                     }
                     usuario.setAdmin(admin.isAdmin());
                     repository.save(usuario);

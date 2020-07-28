@@ -81,10 +81,16 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Override
     @Transactional
     public void atualizaStatus(Integer id, StatusChamado statusChamado) {
+
         repository
                 .findById(id)
                 .map(c -> {
                     c.setStatus(statusChamado);
+
+                    if (statusChamado == StatusChamado.SOLUCIONADO) {
+                        c.setDataFinal(LocalDate.now());
+                    }
+
                     repository.save(c);
                     return c;
                 }).orElseThrow(() -> new ChamadoNaoEncontradoException());
@@ -93,14 +99,13 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Override
     @Transactional
     public void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO) {
+        Chamado chamado = repository
+                .findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException());
 
         Usuario user = usuarioRepository
                 .findById(tecnicoDTO.getIdTecnico())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException());
-
-        Chamado chamado = repository
-                .findById(id)
-                .orElseThrow(() -> new ChamadoNaoEncontradoException());
 
         System.out.println("Usuario é tecnico: " + user.isTecn());
 

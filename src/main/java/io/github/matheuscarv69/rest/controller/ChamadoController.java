@@ -55,8 +55,7 @@ public class ChamadoController {
 
         return list2;
     }
-
-
+    
     @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
