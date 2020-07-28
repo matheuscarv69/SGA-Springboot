@@ -4,12 +4,15 @@ import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
+import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -122,30 +125,39 @@ public class UsuarioController {
     }
 
     @GetMapping("/chamadosReq/{id}") // busca os chamados que um user fez
-    public Set<Chamado> findChamadosReq(@PathVariable Integer id) {
+    public List<InformacoesChamadoDTO> findChamadosReq(@PathVariable Integer id) {
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->
                         new UsuarioNaoEncontradoException());
 
         user = repository.findUsuarioFetchChamadosReq(user.getId());
 
-        return user.getChamadosReq();
-    }
+        List<Chamado> listaChamado = user.getChamadosReq();
 
-    @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
-    public Set<Chamado> findChamadosTecn(@PathVariable Integer id) {
+        List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();
 
-        Usuario user = repository.findById(id)
-                .orElseThrow(() ->
-                        new UsuarioNaoEncontradoException());
+        for (Chamado c : listaChamado) {
+            listaDTO.add(converter(c));
+        }
 
-        if (user.isTecn()) {
-            user = repository.findUsuarioFetchChamadosTecn(user.getId());
-            return user.getChamadosTecn();
-        } else
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
+        return listaDTO;
 
     }
+
+//    @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
+//    public List<Chamado> findChamadosTecn(@PathVariable Integer id) {
+//
+//        Usuario user = repository.findById(id)
+//                .orElseThrow(() ->
+//                        new UsuarioNaoEncontradoException());
+//
+//        if (user.isTecn()) {
+//            user = repository.findUsuarioFetchChamadosTecn(user.getId());
+//            return user.getChamadosTecn();
+//        } else
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
+//
+//    }
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
     public List<Usuario> find(Usuario filtro) {
@@ -161,4 +173,41 @@ public class UsuarioController {
         return repository.findAll(example);
     }
 
+    private InformacoesChamadoDTO converter(Chamado chamado) {
+
+        String dataFinal = new String();
+        String nomeTecn = new String();
+        String matriculaTecn = new String();
+
+        if (chamado.getDataFinal() == null) {
+            dataFinal = "Chamado ainda não foi solucionado.";
+        } else {
+            dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+
+        if (chamado.getTecnico() == null) {
+            nomeTecn = "Técnico não atribuído ao chamado.";
+            matriculaTecn = "";
+        } else {
+            nomeTecn = chamado.getTecnico().getNome();
+            matriculaTecn = chamado.getTecnico().getMatricula();
+        }
+
+        return InformacoesChamadoDTO
+                .builder()
+                .id(chamado.getId())
+                .requerente(chamado.getRequerente().getNome())
+                .matricula(chamado.getRequerente().getMatricula())
+                .titulo(chamado.getTitulo())
+                .descricao(chamado.getDescricao())
+                .tipo(chamado.getTipo().toString())
+                .bloco(chamado.getBloco())
+                .sala(chamado.getSala())
+                .status(chamado.getStatus().name())
+                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
+                .dataFinal(dataFinal)
+                .nomeTecn(nomeTecn)
+                .matriculaTecn(matriculaTecn)
+                .build();
+    }
 }

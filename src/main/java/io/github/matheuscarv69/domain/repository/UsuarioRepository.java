@@ -1,5 +1,6 @@
 package io.github.matheuscarv69.domain.repository;
 
+import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +15,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Usuario findByMatricula(String nome); //busca um usuario pela matricula
 
     @Query("select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
+    //@Query(value = "SELECT * FROM CHAMADO AS C WHERE C.REQUERENTE_ID = :id", nativeQuery = true)
     Usuario findUsuarioFetchChamadosReq(@Param("id") Integer id);
 
     @Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
-    Usuario findUsuarioFetchChamadosTecn(@Param("id") Integer id);
+    List<Chamado> findUsuarioFetchChamadosTecn(@Param("id") Integer id);
 
     @Query(value = "SELECT * FROM USUARIO WHERE TECN = TRUE", nativeQuery = true) //busca tecnicos
     List<Usuario> findTecnicos();

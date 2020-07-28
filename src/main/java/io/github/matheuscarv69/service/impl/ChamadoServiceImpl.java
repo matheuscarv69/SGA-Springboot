@@ -8,14 +8,18 @@ import io.github.matheuscarv69.domain.repository.ChamadoRepository;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
+import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
+import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -71,7 +75,7 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
-        Example example = Example.of(filtro,matcher);
+        Example example = Example.of(filtro, matcher);
 
         return repository.findAll(example);
     }
@@ -91,9 +95,36 @@ public class ChamadoServiceImpl implements ChamadoService {
 
     @Override
     @Transactional
+    public void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO) {
+
+        Usuario user = usuarioRepository
+                .findById(tecnicoDTO.getIdTecnico())
+                .orElseThrow(() -> new UsuarioNaoEncontradoException());
+
+        Chamado chamado = repository
+                .findById(id)
+                .orElseThrow(() -> new ChamadoNaoEncontradoException());
+
+        System.out.println("Usuario é tecnico: " + user.isTecn());
+
+        if (!user.isTecn()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário não é técnico");
+        } else if (chamado.getRequerente().getId() == user.getId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O mesmo requerente não pode ser atribuído como técnico");
+        }
+
+        chamado.setTecnico(user);
+        chamado.setStatus(StatusChamado.PROCESSANDO);
+
+        repository.save(chamado);
+    }
+
+
+    @Override
+    @Transactional
     public void excluir(Integer id) {
         repository.findById(id)
-                .map(c ->{
+                .map(c -> {
                     repository.delete(c);
                     return c;
                 }).orElseThrow(() -> new ChamadoNaoEncontradoException());

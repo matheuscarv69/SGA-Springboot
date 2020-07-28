@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -45,12 +46,12 @@ public class Usuario {
     private boolean tecn;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "requerente", fetch = FetchType.LAZY)
-    private Set<Chamado> chamadosReq;
+    @OneToMany(mappedBy = "requerente")
+    private List<Chamado> chamadosReq;
 
     @JsonIgnore
     @OneToMany(mappedBy = "tecnico", fetch = FetchType.LAZY)
-    private Set<Chamado> chamadosTecn;
+    private List<Chamado> chamadosTecn;
 
     @Override
     public String toString() {

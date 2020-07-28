@@ -6,6 +6,7 @@ import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.AtualizacaoStatusChamadoDTO;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
+import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("api/chamados")
@@ -61,7 +61,7 @@ public class ChamadoController {
 
         List<InformacoesChamadoDTO> list2 = new ArrayList<>();
 
-        for(Chamado c : list){
+        for (Chamado c : list) {
             list2.add(converter(c));
         }
 
@@ -77,6 +77,13 @@ public class ChamadoController {
 
         service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
 
+    }
+
+    @PatchMapping("/atribTecn/{id}")
+    @ResponseStatus(OK)
+    public void atribTecn(@PathVariable Integer id, @RequestBody TecnicoDTO tecnicoDTO) {
+
+        service.atribuirTecn(id, tecnicoDTO);
     }
 
     @DeleteMapping("{id}") // deleta um chamado pelo id
