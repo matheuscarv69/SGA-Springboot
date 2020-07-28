@@ -50,7 +50,7 @@ public class Usuario {
     private List<Chamado> chamadosReq;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tecnico", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tecnico")
     private List<Chamado> chamadosTecn;
 
     @Override

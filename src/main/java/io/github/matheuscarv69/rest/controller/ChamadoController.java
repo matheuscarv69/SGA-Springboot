@@ -34,7 +34,7 @@ public class ChamadoController {
     }
 
     @GetMapping("{id}") // busca um chamado por id
-    public InformacoesChamadoDTO getById(@PathVariable("id") Integer id) {
+    public InformacoesChamadoDTO getById(@PathVariable Integer id) {
         return service
                 .buscarChamadoPorId(id)
                 .map(chamado -> converter(chamado))
@@ -42,18 +42,6 @@ public class ChamadoController {
                         new ChamadoNaoEncontradoException());
 
     }
-
-//    @GetMapping // busca todos os chamados
-//    public List<InformacoesChamadoDTO> getAll() {
-//        List<Chamado> list = service.buscarTodos();
-//        List<InformacoesChamadoDTO> list2 = new ArrayList<>();
-//
-//        for(Chamado c : list){
-//            list2.add(converter(c));
-//        }
-//
-//        return list2;
-//    }
 
     @GetMapping // busca por parametro e todos
     public List<InformacoesChamadoDTO> find(Chamado filtro) {
@@ -71,7 +59,7 @@ public class ChamadoController {
 
     @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
-    public void updateStatus(@PathVariable("id") Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
+    public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
 
         String novoStatus = dto.getNovoStatus();
 

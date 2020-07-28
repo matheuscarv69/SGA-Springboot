@@ -144,20 +144,28 @@ public class UsuarioController {
 
     }
 
-//    @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
-//    public List<Chamado> findChamadosTecn(@PathVariable Integer id) {
-//
-//        Usuario user = repository.findById(id)
-//                .orElseThrow(() ->
-//                        new UsuarioNaoEncontradoException());
-//
-//        if (user.isTecn()) {
-//            user = repository.findUsuarioFetchChamadosTecn(user.getId());
-//            return user.getChamadosTecn();
-//        } else
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
-//
-//    }
+    @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
+    public List<InformacoesChamadoDTO> findChamadosTecn(@PathVariable Integer id) {
+
+        Usuario user = repository.findById(id)
+                .orElseThrow(() ->
+                        new UsuarioNaoEncontradoException());
+
+        if (!user.isTecn()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
+        }
+
+        user = repository.findUsuarioFetchChamadosTecn(user.getId());
+
+        List<Chamado> listaChamado = user.getChamadosTecn();
+        List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();
+
+        for (Chamado c : listaChamado) {
+            listaDTO.add(converter(c));
+        }
+
+        return listaDTO;
+    }
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
     public List<Usuario> find(Usuario filtro) {
