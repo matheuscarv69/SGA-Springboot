@@ -10,16 +10,13 @@ import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
-import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -108,9 +105,9 @@ public class ChamadoServiceImpl implements ChamadoService {
         System.out.println("Usuario é tecnico: " + user.isTecn());
 
         if (!user.isTecn()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O usuário não é técnico");
+            throw new RegraNegocioException("O usuário não é técnico");
         } else if (chamado.getRequerente().getId() == user.getId()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O mesmo requerente não pode ser atribuído como técnico");
+            throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
         }
 
         chamado.setTecnico(user);
@@ -118,7 +115,6 @@ public class ChamadoServiceImpl implements ChamadoService {
 
         repository.save(chamado);
     }
-
 
     @Override
     @Transactional

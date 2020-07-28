@@ -3,6 +3,7 @@ package io.github.matheuscarv69.rest.controller;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
+import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import org.springframework.data.domain.Example;
@@ -152,7 +153,7 @@ public class UsuarioController {
                         new UsuarioNaoEncontradoException());
 
         if (!user.isTecn()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário não é técnico.");
+            throw new RegraNegocioException("O usuário não é técnico");
         }
 
         user = repository.findUsuarioFetchChamadosTecn(user.getId());
