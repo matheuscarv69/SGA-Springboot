@@ -34,8 +34,12 @@ public class ChamadoServiceImpl implements ChamadoService {
     public Chamado salvar(ChamadoDTO dto) {
         Integer idRequerente = dto.getRequerente();
         Usuario usuario = usuarioRepository
-                .findById(idRequerente)
-                .orElseThrow(() ->
+                .findById(idRequerente).map(user -> {
+                    if(!user.isStatus()){
+                        throw new RegraNegocioException("O usuário não está ativo");
+                    }
+                    return user;
+                }).orElseThrow(() ->
                         new RegraNegocioException("Código de usuário inválido."));
 
         Chamado chamado = new Chamado();
@@ -46,7 +50,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         chamado.setBloco(dto.getBloco());
         chamado.setSala(dto.getSala());
         chamado.setDataInicio(LocalDate.now());
-        chamado.setStatus(StatusChamado.PENDENTE);
+        chamado.setStatusChamado(StatusChamado.PENDENTE);
 
         repository.save(chamado);
 
@@ -85,7 +89,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         repository
                 .findById(id)
                 .map(c -> {
-                    c.setStatus(statusChamado);
+                    c.setStatusChamado(statusChamado);
 
                     if (statusChamado == StatusChamado.SOLUCIONADO) {
                         c.setDataFinal(LocalDate.now());
@@ -107,16 +111,16 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .findById(tecnicoDTO.getIdTecnico())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException());
 
-        System.out.println("Usuario é tecnico: " + user.isTecn());
-
-        if (!user.isTecn()) {
+        if (!user.isStatus()) {
+            throw new RegraNegocioException("O usuário não está ativo");
+        } else if (!user.isTecn()) {
             throw new RegraNegocioException("O usuário não é técnico");
         } else if (chamado.getRequerente().getId() == user.getId()) {
             throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
         }
 
         chamado.setTecnico(user);
-        chamado.setStatus(StatusChamado.PROCESSANDO);
+        chamado.setStatusChamado(StatusChamado.PROCESSANDO);
 
         repository.save(chamado);
     }

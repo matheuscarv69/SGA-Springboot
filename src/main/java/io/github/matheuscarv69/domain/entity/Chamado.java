@@ -44,7 +44,7 @@ public class Chamado {
     private Integer sala;
 
     @Enumerated(EnumType.STRING)
-    private StatusChamado status;
+    private StatusChamado statusChamado;
 
     @ManyToOne
     @JoinColumn(name = "requerente_id")

@@ -10,12 +10,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -30,6 +28,8 @@ public class UsuarioController {
     @PostMapping // salva um user
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario save(@RequestBody Usuario usuario) {
+        usuario.setStatus(true);
+
         return repository.save(usuario);
     }
 
@@ -40,7 +40,13 @@ public class UsuarioController {
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
+                    if (!usuarioExistente.isStatus()) {
+                        throw new RegraNegocioException("O usuário não está ativo");
+                    }
+
                     usuario.setId(usuarioExistente.getId());
+                    usuario.setStatus(true);
+
                     repository.save(usuario);
                     return usuarioExistente;
                 }).orElseThrow(() ->
@@ -50,14 +56,36 @@ public class UsuarioController {
 
     @DeleteMapping("{id}") // deleta um user
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void desligarUser(@PathVariable Integer id) {
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
-                    repository.delete(usuarioExistente);
+                    if (!usuarioExistente.isStatus()) {
+                        throw new RegraNegocioException("Usuário já está inativo");
+                    }
+
+                    usuarioExistente.setStatus(false);
+                    repository.save(usuarioExistente);
+
                     return usuarioExistente;
                 }).orElseThrow(() ->
                 new UsuarioNaoEncontradoException());
+    }
+
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativarUser(@PathVariable Integer id) {
+        repository.findById(id)
+                .map(usuarioExistente -> {
+                    if (usuarioExistente.isStatus()) {
+                        throw new RegraNegocioException("Usuário já está ativo");
+                    }
+
+                    usuarioExistente.setStatus(true);
+
+                    repository.save(usuarioExistente);
+                    return usuarioExistente;
+                }).orElseThrow(() -> new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("{id}") // busca um user por id
@@ -97,9 +125,12 @@ public class UsuarioController {
 
         repository.findById(id)
                 .map(usuario -> {
-                    if (usuario.isTecn() && tecn.isTecn()) {
+                    if (!usuario.isStatus()) {
+                        throw new RegraNegocioException("O usuário não está ativo");
+                    } else if (usuario.isTecn() && tecn.isTecn()) {
                         throw new RegraNegocioException("Usuário já é técnico");
                     }
+
                     usuario.setTecn(tecn.isTecn());
                     repository.save(usuario);
 
@@ -114,9 +145,12 @@ public class UsuarioController {
 
         repository.findById(id)
                 .map(usuario -> {
-                    if (usuario.isAdmin() && admin.isAdmin()) {
+                    if (!usuario.isStatus()) {
+                        throw new RegraNegocioException("O usuário não está ativo");
+                    } else if (usuario.isAdmin() && admin.isAdmin()) {
                         throw new RegraNegocioException("Usuário já é administrador");
                     }
+
                     usuario.setAdmin(admin.isAdmin());
                     repository.save(usuario);
 
@@ -147,7 +181,6 @@ public class UsuarioController {
 
     @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
     public List<InformacoesChamadoDTO> findChamadosTecn(@PathVariable Integer id) {
-
         Usuario user = repository.findById(id)
                 .orElseThrow(() ->
                         new UsuarioNaoEncontradoException());
@@ -170,6 +203,8 @@ public class UsuarioController {
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
     public List<Usuario> find(Usuario filtro) {
+
+        filtro.setStatus(true);
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -212,7 +247,7 @@ public class UsuarioController {
                 .tipo(chamado.getTipo().toString())
                 .bloco(chamado.getBloco())
                 .sala(chamado.getSala())
-                .status(chamado.getStatus().name())
+                .status(chamado.getStatusChamado().name())
                 .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
                 .dataFinal(dataFinal)
                 .nomeTecn(nomeTecn)

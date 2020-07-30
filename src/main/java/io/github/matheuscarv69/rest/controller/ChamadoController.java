@@ -109,7 +109,7 @@ public class ChamadoController {
                 .tipo(chamado.getTipo().toString())
                 .bloco(chamado.getBloco())
                 .sala(chamado.getSala())
-                .status(chamado.getStatus().name())
+                .status(chamado.getStatusChamado().name())
                 .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
                 .dataFinal(dataFinal)
                 .nomeTecn(nomeTecn)
