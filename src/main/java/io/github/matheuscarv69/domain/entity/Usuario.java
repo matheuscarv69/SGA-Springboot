@@ -39,9 +39,8 @@ public class Usuario {
     @Column
     private String senha;
 
-    @JsonIgnore
     @Column
-    private boolean status;
+    private boolean ativo = true;
 
     @Column
     private boolean admin;

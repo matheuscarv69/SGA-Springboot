@@ -15,14 +15,14 @@ public interface ChamadoService {
 
     Optional<Chamado> buscarChamadoPorId(Integer id);
 
-    List<Chamado> buscarTodos();
-
     List<Chamado> buscarPorPar(Chamado filtro);
 
     void atualizaStatus(Integer id, StatusChamado statusChamado);
 
     void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO);
 
-    void excluir(Integer id);
+    void arquivarChamado(Integer id);
+
+    void desarquivarChamado(Integer id);
 
 }

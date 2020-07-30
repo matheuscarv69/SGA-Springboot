@@ -1,6 +1,5 @@
 package io.github.matheuscarv69.domain.repository;
 
-import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,12 +20,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
     Usuario findUsuarioFetchChamadosTecn(@Param("id") Integer id);
 
-    @Query(value = "SELECT * FROM USUARIO WHERE STATUS = TRUE AND TECN = TRUE", nativeQuery = true) //busca tecnicos
+    @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND TECN = TRUE", nativeQuery = true) //busca tecnicos
     List<Usuario> findTecnicos();
 
-    @Query(value = "SELECT * FROM USUARIO WHERE STATUS = TRUE AND ADMIN = TRUE", nativeQuery = true) //busca administradores
+    @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND ADMIN = TRUE", nativeQuery = true) //busca administradores
     List<Usuario> findAdministradores();
 
-    @Query(value = "SELECT * FROM USUARIO WHERE STATUS = TRUE AND ADMIN = FALSE AND TECN = FALSE", nativeQuery = true) //busca usuarios normais
+    @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND ADMIN = FALSE AND TECN = FALSE", nativeQuery = true) //busca usuarios normais
     List<Usuario> findUsuarios();
 }

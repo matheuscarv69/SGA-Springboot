@@ -11,9 +11,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.github.matheuscarv69.rest.controller.ChamadoController.converter;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -28,7 +29,6 @@ public class UsuarioController {
     @PostMapping // salva um user
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario save(@RequestBody Usuario usuario) {
-        usuario.setStatus(true);
 
         return repository.save(usuario);
     }
@@ -36,16 +36,15 @@ public class UsuarioController {
     @PutMapping("{id}") // atualiza um user
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Integer id, @RequestBody Usuario usuario) {
-
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
-                    if (!usuarioExistente.isStatus()) {
+                    if (!usuarioExistente.isAtivo()) {
                         throw new RegraNegocioException("O usuário não está ativo");
                     }
 
                     usuario.setId(usuarioExistente.getId());
-                    usuario.setStatus(true);
+                    usuario.setAtivo(true);
 
                     repository.save(usuario);
                     return usuarioExistente;
@@ -60,11 +59,11 @@ public class UsuarioController {
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
-                    if (!usuarioExistente.isStatus()) {
-                        throw new RegraNegocioException("Usuário já está inativo");
+                    if (!usuarioExistente.isAtivo()) {
+                        throw new RegraNegocioException("O Usuário já está inativo");
                     }
 
-                    usuarioExistente.setStatus(false);
+                    usuarioExistente.setAtivo(false);
                     repository.save(usuarioExistente);
 
                     return usuarioExistente;
@@ -77,15 +76,16 @@ public class UsuarioController {
     public void ativarUser(@PathVariable Integer id) {
         repository.findById(id)
                 .map(usuarioExistente -> {
-                    if (usuarioExistente.isStatus()) {
+                    if (usuarioExistente.isAtivo()) {
                         throw new RegraNegocioException("Usuário já está ativo");
                     }
 
-                    usuarioExistente.setStatus(true);
-
+                    usuarioExistente.setAtivo(true);
                     repository.save(usuarioExistente);
+
                     return usuarioExistente;
-                }).orElseThrow(() -> new UsuarioNaoEncontradoException());
+                }).orElseThrow(() ->
+                new UsuarioNaoEncontradoException());
     }
 
     @GetMapping("{id}") // busca um user por id
@@ -125,7 +125,7 @@ public class UsuarioController {
 
         repository.findById(id)
                 .map(usuario -> {
-                    if (!usuario.isStatus()) {
+                    if (!usuario.isAtivo()) {
                         throw new RegraNegocioException("O usuário não está ativo");
                     } else if (usuario.isTecn() && tecn.isTecn()) {
                         throw new RegraNegocioException("Usuário já é técnico");
@@ -145,7 +145,7 @@ public class UsuarioController {
 
         repository.findById(id)
                 .map(usuario -> {
-                    if (!usuario.isStatus()) {
+                    if (!usuario.isAtivo()) {
                         throw new RegraNegocioException("O usuário não está ativo");
                     } else if (usuario.isAdmin() && admin.isAdmin()) {
                         throw new RegraNegocioException("Usuário já é administrador");
@@ -202,9 +202,9 @@ public class UsuarioController {
     }
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
-    public List<Usuario> find(Usuario filtro) {
+    public List<Usuario> buscarPorPar(Usuario filtro) {
 
-        filtro.setStatus(true);
+        //filtro.setStatus(true);
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -217,41 +217,41 @@ public class UsuarioController {
         return repository.findAll(example);
     }
 
-    private InformacoesChamadoDTO converter(Chamado chamado) {
-
-        String dataFinal = new String();
-        String nomeTecn = new String();
-        String matriculaTecn = new String();
-
-        if (chamado.getDataFinal() == null) {
-            dataFinal = "Chamado ainda não foi solucionado.";
-        } else {
-            dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        }
-
-        if (chamado.getTecnico() == null) {
-            nomeTecn = "Técnico não atribuído ao chamado.";
-            matriculaTecn = "";
-        } else {
-            nomeTecn = chamado.getTecnico().getNome();
-            matriculaTecn = chamado.getTecnico().getMatricula();
-        }
-
-        return InformacoesChamadoDTO
-                .builder()
-                .id(chamado.getId())
-                .requerente(chamado.getRequerente().getNome())
-                .matricula(chamado.getRequerente().getMatricula())
-                .titulo(chamado.getTitulo())
-                .descricao(chamado.getDescricao())
-                .tipo(chamado.getTipo().toString())
-                .bloco(chamado.getBloco())
-                .sala(chamado.getSala())
-                .status(chamado.getStatusChamado().name())
-                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
-                .dataFinal(dataFinal)
-                .nomeTecn(nomeTecn)
-                .matriculaTecn(matriculaTecn)
-                .build();
-    }
+//    private InformacoesChamadoDTO converter(Chamado chamado) {
+//
+//        String dataFinal = new String();
+//        String nomeTecn = new String();
+//        String matriculaTecn = new String();
+//
+//        if (chamado.getDataFinal() == null) {
+//            dataFinal = "Chamado ainda não foi solucionado.";
+//        } else {
+//            dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+//        }
+//
+//        if (chamado.getTecnico() == null) {
+//            nomeTecn = "Técnico não atribuído ao chamado.";
+//            matriculaTecn = "";
+//        } else {
+//            nomeTecn = chamado.getTecnico().getNome();
+//            matriculaTecn = chamado.getTecnico().getMatricula();
+//        }
+//
+//        return InformacoesChamadoDTO
+//                .builder()
+//                .id(chamado.getId())
+//                .requerente(chamado.getRequerente().getNome())
+//                .matricula(chamado.getRequerente().getMatricula())
+//                .titulo(chamado.getTitulo())
+//                .descricao(chamado.getDescricao())
+//                .tipo(chamado.getTipo().toString())
+//                .bloco(chamado.getBloco())
+//                .sala(chamado.getSala())
+//                .status(chamado.getStatusChamado().name())
+//                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
+//                .dataFinal(dataFinal)
+//                .nomeTecn(nomeTecn)
+//                .matriculaTecn(matriculaTecn)
+//                .build();
+//    }
 }

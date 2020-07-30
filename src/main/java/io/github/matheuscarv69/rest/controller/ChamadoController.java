@@ -30,7 +30,30 @@ public class ChamadoController {
     @ResponseStatus(CREATED)
     public Integer save(@RequestBody ChamadoDTO dto) {
         Chamado chamado = service.salvar(dto);
+
         return chamado.getId();
+    }
+
+    @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @ResponseStatus(NO_CONTENT)
+    public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
+
+        String novoStatus = dto.getNovoStatus();
+
+        service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
+
+    }
+
+    @DeleteMapping("{id}") // deleta um chamado pelo id
+    @ResponseStatus(NO_CONTENT)
+    public void arquivarChamado(@PathVariable Integer id) {
+        service.arquivarChamado(id);
+    }
+
+    @PatchMapping("/desArqChamado/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void desarquivarChamado(@PathVariable Integer id){
+        service.desarquivarChamado(id);
     }
 
     @GetMapping("{id}") // busca um chamado por id
@@ -55,31 +78,14 @@ public class ChamadoController {
 
         return list2;
     }
-    
-    @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
-    @ResponseStatus(NO_CONTENT)
-    public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
-
-        String novoStatus = dto.getNovoStatus();
-
-        service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
-
-    }
 
     @PatchMapping("/atribTecn/{id}")
     @ResponseStatus(OK)
     public void atribTecn(@PathVariable Integer id, @RequestBody TecnicoDTO tecnicoDTO) {
-
         service.atribuirTecn(id, tecnicoDTO);
     }
 
-    @DeleteMapping("{id}") // deleta um chamado pelo id
-    @ResponseStatus(NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
-        service.excluir(id);
-    }
-
-    private InformacoesChamadoDTO converter(Chamado chamado) {
+    public final static InformacoesChamadoDTO converter(Chamado chamado) {
 
         String dataFinal = new String();
         String nomeTecn = new String();
@@ -99,8 +105,7 @@ public class ChamadoController {
             matriculaTecn = chamado.getTecnico().getMatricula();
         }
 
-        return InformacoesChamadoDTO
-                .builder()
+        return InformacoesChamadoDTO.builder()
                 .id(chamado.getId())
                 .requerente(chamado.getRequerente().getNome())
                 .matricula(chamado.getRequerente().getMatricula())
@@ -114,6 +119,7 @@ public class ChamadoController {
                 .dataFinal(dataFinal)
                 .nomeTecn(nomeTecn)
                 .matriculaTecn(matriculaTecn)
+                .ativo(chamado.isAtivo())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package io.github.matheuscarv69.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.domain.enums.TipoChamado;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -45,6 +45,10 @@ public class Chamado {
 
     @Enumerated(EnumType.STRING)
     private StatusChamado statusChamado;
+
+    //@JsonIgnore
+    @Column
+    private boolean ativo = true;
 
     @ManyToOne
     @JoinColumn(name = "requerente_id")
