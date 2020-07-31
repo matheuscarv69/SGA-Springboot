@@ -3,10 +3,7 @@ package io.github.matheuscarv69.rest.controller;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
-import io.github.matheuscarv69.rest.dto.AtualizacaoStatusChamadoDTO;
-import io.github.matheuscarv69.rest.dto.ChamadoDTO;
-import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
-import io.github.matheuscarv69.rest.dto.TecnicoDTO;
+import io.github.matheuscarv69.rest.dto.*;
 import io.github.matheuscarv69.service.ChamadoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +31,8 @@ public class ChamadoController {
         return chamado.getId();
     }
 
-    @PatchMapping("{id}")// patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @PatchMapping("{id}")
+//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
 
@@ -52,7 +50,7 @@ public class ChamadoController {
 
     @PatchMapping("/desArqChamado/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void desarquivarChamado(@PathVariable Integer id){
+    public void desarquivarChamado(@PathVariable Integer id) {
         service.desarquivarChamado(id);
     }
 
@@ -67,8 +65,8 @@ public class ChamadoController {
     }
 
     @GetMapping // busca por parametro e todos
-    public List<InformacoesChamadoDTO> find(Chamado filtro) {
-        List<Chamado> list = service.buscarPorPar(filtro);
+    public List<InformacoesChamadoDTO> find(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+        List<Chamado> list = service.buscarPorPar(filtro, filtroDTO);
 
         List<InformacoesChamadoDTO> list2 = new ArrayList<>();
 
@@ -87,14 +85,14 @@ public class ChamadoController {
 
     public final static InformacoesChamadoDTO converter(Chamado chamado) {
 
-        String dataFinal = new String();
+        String dataSolucao = new String();
         String nomeTecn = new String();
         String matriculaTecn = new String();
 
         if (chamado.getDataFinal() == null) {
-            dataFinal = "Chamado ainda não foi solucionado.";
+            dataSolucao = "Chamado ainda não foi solucionado.";
         } else {
-            dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
         if (chamado.getTecnico() == null) {
@@ -116,8 +114,8 @@ public class ChamadoController {
                 .sala(chamado.getSala())
                 .status(chamado.getStatusChamado().name())
                 .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
-                .dataFinal(dataFinal)
-                .nomeTecn(nomeTecn)
+                .dataSolucao(dataSolucao)
+                .tecnico(nomeTecn)
                 .matriculaTecn(matriculaTecn)
                 .ativo(chamado.isAtivo())
                 .build();

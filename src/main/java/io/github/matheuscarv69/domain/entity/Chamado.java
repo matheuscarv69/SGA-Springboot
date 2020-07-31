@@ -1,6 +1,5 @@
 package io.github.matheuscarv69.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.domain.enums.TipoChamado;
 import lombok.AllArgsConstructor;

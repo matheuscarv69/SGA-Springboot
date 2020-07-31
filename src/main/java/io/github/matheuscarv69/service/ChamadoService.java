@@ -4,6 +4,8 @@ import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
+import io.github.matheuscarv69.rest.dto.FiltroChamadoDTO;
+import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 
 import java.util.List;
@@ -15,7 +17,9 @@ public interface ChamadoService {
 
     Optional<Chamado> buscarChamadoPorId(Integer id);
 
-    List<Chamado> buscarPorPar(Chamado filtro);
+    //List<Chamado> buscarPorPar(Chamado filtro);
+
+    List<Chamado> buscarPorPar(Chamado filtro1 , FiltroChamadoDTO filtroDTO);
 
     void atualizaStatus(Integer id, StatusChamado statusChamado);
 

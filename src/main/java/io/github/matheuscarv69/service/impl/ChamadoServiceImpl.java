@@ -10,6 +10,7 @@ import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
+import io.github.matheuscarv69.rest.dto.FiltroChamadoDTO;
 import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,22 +121,6 @@ public class ChamadoServiceImpl implements ChamadoService {
     }
 
     @Override
-    public List<Chamado> buscarPorPar(Chamado filtro) {
-
-        System.out.println("Ativo " + filtro.isAtivo());
-
-
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-
-        Example example = Example.of(filtro, matcher);
-
-        return repository.findAll(example);
-    }
-
-    @Override
     @Transactional
     public void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO) {
         Chamado chamado = repository
@@ -163,5 +149,59 @@ public class ChamadoServiceImpl implements ChamadoService {
         repository.save(chamado);
     }
 
+    @Override
+    public List<Chamado> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+
+        filtro = converterDTO(filtro, filtroDTO);
+
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Example example = Example.of(filtro, matcher);
+
+
+        return repository.findAll(example);
+    }
+
+    public Chamado converterDTO(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+        Usuario req = new Usuario();
+        Usuario tec = new Usuario();
+
+        if (filtroDTO.getNomeRequerente() != null) {
+            req = usuarioRepository.findByNome(filtroDTO.getNomeRequerente());
+            filtro.setRequerente(req);
+        }
+
+        if (filtroDTO.getMatriculaRequerente() != null) {
+            req = usuarioRepository.findByMatricula(filtroDTO.getMatriculaRequerente());
+            filtro.setRequerente(req);
+        }
+
+        if (filtroDTO.getTecnico() != null) {
+            tec = usuarioRepository.findByNome(filtroDTO.getTecnico());
+            filtro.setTecnico(tec);
+        }
+
+        if (filtroDTO.getMatriculaTecn() != null) {
+            tec = usuarioRepository.findByMatricula(filtroDTO.getMatriculaTecn());
+            filtro.setTecnico(tec);
+        }
+
+        if (filtroDTO.getDataInicial() != null) {
+            System.out.println("Data Inicial: " + LocalDate.parse(filtroDTO.getDataInicial(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+            filtro.setDataInicio(LocalDate.parse(filtroDTO.getDataInicial(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
+
+        if (filtroDTO.getDataSolucao() != null) {
+            System.out.println("Data Solução: " + LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            filtro.setDataFinal(LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
+
+
+        return filtro;
+    }
 
 }
