@@ -13,9 +13,11 @@ public class FiltroChamadoDTO {
 
     private String nomeRequerente;
     private String matriculaRequerente;
-    private String tecnico;
+    private String nomeTecnico;
     private String matriculaTecn;
     private String dataInicial;
     private String dataSolucao;
+    private String status;
+    private String tipo;
 
 }

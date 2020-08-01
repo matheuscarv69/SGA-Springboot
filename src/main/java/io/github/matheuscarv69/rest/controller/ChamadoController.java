@@ -109,7 +109,7 @@ public class ChamadoController {
                 .matricula(chamado.getRequerente().getMatricula())
                 .titulo(chamado.getTitulo())
                 .descricao(chamado.getDescricao())
-                .tipo(chamado.getTipo().toString())
+                .tipo(chamado.getTipoChamado().toString())
                 .bloco(chamado.getBloco())
                 .sala(chamado.getSala())
                 .status(chamado.getStatusChamado().name())

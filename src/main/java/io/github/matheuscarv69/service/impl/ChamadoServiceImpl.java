@@ -49,7 +49,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         chamado.setRequerente(usuario);
         chamado.setTitulo(dto.getTitulo());
         chamado.setDescricao(dto.getDescricao());
-        chamado.setTipo(TipoChamado.valueOf(dto.getTipo()));
+        chamado.setTipoChamado(TipoChamado.valueOf(dto.getTipo()));
         chamado.setBloco(dto.getBloco());
         chamado.setSala(dto.getSala());
         chamado.setDataInicio(LocalDate.now());
@@ -168,25 +168,52 @@ public class ChamadoServiceImpl implements ChamadoService {
     public Chamado converterDTO(Chamado filtro, FiltroChamadoDTO filtroDTO) {
         Usuario req = new Usuario();
         Usuario tec = new Usuario();
+        Usuario aux = new Usuario();
 
         if (filtroDTO.getNomeRequerente() != null) {
             req = usuarioRepository.findByNome(filtroDTO.getNomeRequerente());
-            filtro.setRequerente(req);
+
+            if(req == null){
+                aux.setNome(filtroDTO.getNomeRequerente());
+                filtro.setRequerente(aux);
+            }else{
+                filtro.setRequerente(req);
+            }
+
         }
 
         if (filtroDTO.getMatriculaRequerente() != null) {
             req = usuarioRepository.findByMatricula(filtroDTO.getMatriculaRequerente());
-            filtro.setRequerente(req);
+
+            if(req == null){
+                aux.setMatricula(filtroDTO.getMatriculaRequerente());
+                filtro.setRequerente(aux);
+            }else{
+                filtro.setRequerente(req);
+            }
         }
 
-        if (filtroDTO.getTecnico() != null) {
-            tec = usuarioRepository.findByNome(filtroDTO.getTecnico());
-            filtro.setTecnico(tec);
+        if (filtroDTO.getNomeTecnico() != null) {
+            tec = usuarioRepository.findByNome(filtroDTO.getNomeTecnico());
+
+            if(tec == null){
+                aux.setNome(filtroDTO.getNomeTecnico());
+                filtro.setTecnico(aux);
+            }else{
+                filtro.setTecnico(tec);
+            }
         }
 
         if (filtroDTO.getMatriculaTecn() != null) {
             tec = usuarioRepository.findByMatricula(filtroDTO.getMatriculaTecn());
-            filtro.setTecnico(tec);
+
+            if(tec == null){
+                aux.setMatricula(filtroDTO.getMatriculaTecn());
+                filtro.setTecnico(aux);
+            }else{
+                filtro.setTecnico(tec);
+            }
+
         }
 
         if (filtroDTO.getDataInicial() != null) {
@@ -199,6 +226,15 @@ public class ChamadoServiceImpl implements ChamadoService {
             System.out.println("Data Solução: " + LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             filtro.setDataFinal(LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
+
+        if (filtroDTO.getStatus() != null) {
+            filtro.setStatusChamado(StatusChamado.valueOf(filtroDTO.getStatus().toUpperCase()));
+        }
+
+        if (filtroDTO.getTipo() != null) {
+            filtro.setTipoChamado(TipoChamado.valueOf(filtroDTO.getTipo().toUpperCase()));
+        }
+
 
 
         return filtro;

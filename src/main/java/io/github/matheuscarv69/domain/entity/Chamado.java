@@ -28,7 +28,7 @@ public class Chamado {
     private String descricao;
 
     @Enumerated(EnumType.STRING)
-    private TipoChamado tipo;
+    private TipoChamado tipoChamado;
 
     @Column
     private LocalDate dataInicio;

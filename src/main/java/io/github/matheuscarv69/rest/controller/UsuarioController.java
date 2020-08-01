@@ -30,7 +30,14 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario save(@RequestBody Usuario usuario) {
 
-        return repository.save(usuario);
+        Usuario user = repository.findByMatricula(usuario.getMatricula());
+
+        if (user == null) {
+            return repository.save(usuario);
+        } else {
+            throw new RegraNegocioException("A matrícula informada já existe");
+        }
+
     }
 
     @PutMapping("{id}") // atualiza um user
