@@ -6,20 +6,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNomeLike(String nome); //busca um usuario com o nome informado
 
+
     Usuario findByNome(String nome); //busca um usuario com o nome informado
 
-//    @Query(value = "SELECT * FROM USUARIO  WHERE MATRICULA LIKE = :MATRICULA",nativeQuery = true)
-//    Usuario buscaMatricula(@Param("matricula") String nome); //busca um usuario pela matricula
-
-    Usuario findByMatricula(String nome); //busca um usuario pela matricula
+    //@Query("select u from Usuario u where u.matricula = :matricula")
+    @Query(value = "SELECT  ID, NOME, MATRICULA, EMAIL, LOGIN, SENHA, PHONE, ATIVO, ADMIN, TECN FROM USUARIO WHERE MATRICULA = :matricula", nativeQuery = true)
+    Usuario buscaMatricula(@Param("matricula") String matricula); //busca um usuario pela matricula
 
     @Query("select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
-    //@Query(value = "SELECT * FROM CHAMADO AS C WHERE C.REQUERENTE_ID = :id", nativeQuery = true)
     Usuario findUsuarioFetchChamadosReq(@Param("id") Integer id);
 
     @Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")

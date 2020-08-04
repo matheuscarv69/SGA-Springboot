@@ -183,7 +183,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         }
 
         if (filtroDTO.getMatriculaRequerente() != null) {
-            req = usuarioRepository.findByMatricula(filtroDTO.getMatriculaRequerente());
+            req = usuarioRepository.buscaMatricula(filtroDTO.getMatriculaRequerente());
 
             if (req == null) {
                 aux.setMatricula(filtroDTO.getMatriculaRequerente());
@@ -205,7 +205,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         }
 
         if (filtroDTO.getMatriculaTecn() != null) {
-            tec = usuarioRepository.findByMatricula(filtroDTO.getMatriculaTecn());
+            tec = usuarioRepository.buscaMatricula(filtroDTO.getMatriculaTecn());
 
             if (tec == null) {
                 aux.setMatricula(filtroDTO.getMatriculaTecn());

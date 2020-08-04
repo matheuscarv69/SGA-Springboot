@@ -34,13 +34,27 @@ public class UsuarioController {
             throw new RegraNegocioException("O campo de matrícula está vazio");
         }
 
-        Usuario user = repository.findByMatricula(usuario.getMatricula());
+        Usuario user = repository.buscaMatricula(usuario.getMatricula());
+
+        System.out.println("Usuario : " + user);
 
         if (user == null) {
             return repository.save(usuario);
         } else {
             throw new RegraNegocioException("A matrícula informada já existe");
         }
+
+//        if (user == null) {
+//            return repository.save(usuario);
+//
+//        } else {
+//            if (user.getMatricula() == usuario.getMatricula()) {
+//                throw new RegraNegocioException("A matrícula informada já existe");
+//                //repository.save(usuario);
+//            } else {
+//                return repository.save(usuario);
+//            }
+//        }
 
     }
 
@@ -58,7 +72,7 @@ public class UsuarioController {
                         throw new RegraNegocioException("O usuário não está ativo");
                     }
 
-                    Usuario user = repository.findByMatricula(usuario.getMatricula());
+                    Usuario user = repository.buscaMatricula(usuario.getMatricula());
 
                     if (user == null) {
                         usuario.setId(usuarioExistente.getId());
