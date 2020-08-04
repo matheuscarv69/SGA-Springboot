@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -173,22 +174,21 @@ public class ChamadoServiceImpl implements ChamadoService {
         if (filtroDTO.getNomeRequerente() != null) {
             req = usuarioRepository.findByNome(filtroDTO.getNomeRequerente());
 
-            if(req == null){
+            if (req == null) {
                 aux.setNome(filtroDTO.getNomeRequerente());
                 filtro.setRequerente(aux);
-            }else{
+            } else {
                 filtro.setRequerente(req);
             }
-
         }
 
         if (filtroDTO.getMatriculaRequerente() != null) {
             req = usuarioRepository.findByMatricula(filtroDTO.getMatriculaRequerente());
 
-            if(req == null){
+            if (req == null) {
                 aux.setMatricula(filtroDTO.getMatriculaRequerente());
                 filtro.setRequerente(aux);
-            }else{
+            } else {
                 filtro.setRequerente(req);
             }
         }
@@ -196,10 +196,10 @@ public class ChamadoServiceImpl implements ChamadoService {
         if (filtroDTO.getNomeTecnico() != null) {
             tec = usuarioRepository.findByNome(filtroDTO.getNomeTecnico());
 
-            if(tec == null){
+            if (tec == null) {
                 aux.setNome(filtroDTO.getNomeTecnico());
                 filtro.setTecnico(aux);
-            }else{
+            } else {
                 filtro.setTecnico(tec);
             }
         }
@@ -207,10 +207,10 @@ public class ChamadoServiceImpl implements ChamadoService {
         if (filtroDTO.getMatriculaTecn() != null) {
             tec = usuarioRepository.findByMatricula(filtroDTO.getMatriculaTecn());
 
-            if(tec == null){
+            if (tec == null) {
                 aux.setMatricula(filtroDTO.getMatriculaTecn());
                 filtro.setTecnico(aux);
-            }else{
+            } else {
                 filtro.setTecnico(tec);
             }
 
@@ -234,8 +234,6 @@ public class ChamadoServiceImpl implements ChamadoService {
         if (filtroDTO.getTipo() != null) {
             filtro.setTipoChamado(TipoChamado.valueOf(filtroDTO.getTipo().toUpperCase()));
         }
-
-
 
         return filtro;
     }

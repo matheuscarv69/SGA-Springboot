@@ -30,6 +30,10 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario save(@RequestBody Usuario usuario) {
 
+        if (usuario.getMatricula().isEmpty()) {
+            throw new RegraNegocioException("O campo de matrícula está vazio");
+        }
+
         Usuario user = repository.findByMatricula(usuario.getMatricula());
 
         if (user == null) {
@@ -40,9 +44,13 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("{id}") // atualiza um user
+    @PutMapping("{id}") // atualiza um usuario
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Integer id, @RequestBody Usuario usuario) {
+        if (usuario.getMatricula().isEmpty()) {
+            throw new RegraNegocioException("O campo de matrícula está vazio");
+        }
+
         repository
                 .findById(id)
                 .map(usuarioExistente -> {
@@ -50,11 +58,23 @@ public class UsuarioController {
                         throw new RegraNegocioException("O usuário não está ativo");
                     }
 
-                    usuario.setId(usuarioExistente.getId());
-                    usuario.setAtivo(true);
+                    Usuario user = repository.findByMatricula(usuario.getMatricula());
 
-                    repository.save(usuario);
-                    return usuarioExistente;
+                    if (user == null) {
+                        usuario.setId(usuarioExistente.getId());
+                        repository.save(usuario);
+                        return usuarioExistente;
+
+                    } else {
+                        if (user.getMatricula() == usuarioExistente.getMatricula()) {
+                            usuario.setId(usuarioExistente.getId());
+
+                            repository.save(usuario);
+                            return usuarioExistente;
+                        } else {
+                            throw new RegraNegocioException("A matrícula informada já existe");
+                        }
+                    }
                 }).orElseThrow(() ->
                 new UsuarioNaoEncontradoException());
 
@@ -224,41 +244,4 @@ public class UsuarioController {
         return repository.findAll(example);
     }
 
-//    private InformacoesChamadoDTO converter(Chamado chamado) {
-//
-//        String dataFinal = new String();
-//        String nomeTecn = new String();
-//        String matriculaTecn = new String();
-//
-//        if (chamado.getDataFinal() == null) {
-//            dataFinal = "Chamado ainda não foi solucionado.";
-//        } else {
-//            dataFinal = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//        }
-//
-//        if (chamado.getTecnico() == null) {
-//            nomeTecn = "Técnico não atribuído ao chamado.";
-//            matriculaTecn = "";
-//        } else {
-//            nomeTecn = chamado.getTecnico().getNome();
-//            matriculaTecn = chamado.getTecnico().getMatricula();
-//        }
-//
-//        return InformacoesChamadoDTO
-//                .builder()
-//                .id(chamado.getId())
-//                .requerente(chamado.getRequerente().getNome())
-//                .matricula(chamado.getRequerente().getMatricula())
-//                .titulo(chamado.getTitulo())
-//                .descricao(chamado.getDescricao())
-//                .tipo(chamado.getTipo().toString())
-//                .bloco(chamado.getBloco())
-//                .sala(chamado.getSala())
-//                .status(chamado.getStatusChamado().name())
-//                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
-//                .dataFinal(dataFinal)
-//                .nomeTecn(nomeTecn)
-//                .matriculaTecn(matriculaTecn)
-//                .build();
-//    }
 }
