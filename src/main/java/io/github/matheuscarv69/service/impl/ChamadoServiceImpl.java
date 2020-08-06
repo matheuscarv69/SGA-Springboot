@@ -71,6 +71,10 @@ public class ChamadoServiceImpl implements ChamadoService {
                         throw new RegraNegocioException("O chamado não está ativo");
                     }
 
+                    if (c.getTecnico() == null) {
+                        throw new RegraNegocioException("Nenhum técnico está atribuído");
+                    }
+
                     c.setStatusChamado(statusChamado);
 
                     if (statusChamado == StatusChamado.SOLUCIONADO) {
@@ -125,22 +129,37 @@ public class ChamadoServiceImpl implements ChamadoService {
     @Transactional
     public void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO) {
         Chamado chamado = repository
-                .findById(id)
+                .findById(id).map(c -> {
+                    if (!c.isAtivo()) {
+                        throw new RegraNegocioException("O chamado não está ativo");
+                    }
+                    return c;
+                })
                 .orElseThrow(() -> new ChamadoNaoEncontradoException());
-
-        if (!chamado.isAtivo()) {
-            throw new RegraNegocioException("O chamado não está ativo");
-        }
 
         Usuario user = usuarioRepository
                 .findById(tecnicoDTO.getIdTecnico())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException());
 
+//        if (!user.isAtivo()) {
+//            throw new RegraNegocioException("O usuário não está ativo");
+//        } else if (!user.isTecn()) {
+//            throw new RegraNegocioException("O usuário não é técnico");
+//        } else if (chamado.getRequerente().getId() == user.getId()) {
+//            throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
+//        } else if (chamado.getRequerente().getId() == user.getId() && user.isAdmin()) {
+//            chamado.setTecnico(user);
+//            chamado.setStatusChamado(StatusChamado.PROCESSANDO);
+//        }
+
         if (!user.isAtivo()) {
             throw new RegraNegocioException("O usuário não está ativo");
         } else if (!user.isTecn()) {
             throw new RegraNegocioException("O usuário não é técnico");
-        } else if (chamado.getRequerente().getId() == user.getId()) {
+        } else if (user.isAdmin()) {
+            chamado.setTecnico(user);
+            chamado.setStatusChamado(StatusChamado.PROCESSANDO);
+        }else if (chamado.getRequerente().getId() == user.getId()) {
             throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
         }
 
