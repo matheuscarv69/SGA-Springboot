@@ -44,18 +44,6 @@ public class UsuarioController {
             throw new RegraNegocioException("A matrícula informada já existe");
         }
 
-//        if (user == null) {
-//            return repository.save(usuario);
-//
-//        } else {
-//            if (user.getMatricula() == usuario.getMatricula()) {
-//                throw new RegraNegocioException("A matrícula informada já existe");
-//                //repository.save(usuario);
-//            } else {
-//                return repository.save(usuario);
-//            }
-//        }
-
     }
 
     @PutMapping("{id}") // atualiza um usuario
@@ -193,6 +181,7 @@ public class UsuarioController {
                     }
 
                     usuario.setAdmin(admin.isAdmin());
+                    usuario.setTecn(true); // Em teste
                     repository.save(usuario);
 
                     return usuario;
@@ -208,6 +197,11 @@ public class UsuarioController {
 
         user = repository.findUsuarioFetchChamadosReq(user.getId());
 
+        if(user == null){
+            List<InformacoesChamadoDTO> list = new ArrayList<>() ;
+            return list;
+        }
+
         List<Chamado> listaChamado = user.getChamadosReq();
 
         List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();
@@ -217,7 +211,6 @@ public class UsuarioController {
         }
 
         return listaDTO;
-
     }
 
     @GetMapping("/chamadosTecn/{id}") // busca os chamados que um tecnico está atribuido
@@ -231,6 +224,11 @@ public class UsuarioController {
         }
 
         user = repository.findUsuarioFetchChamadosTecn(user.getId());
+
+        if(user == null){
+            List<InformacoesChamadoDTO> list = new ArrayList<>() ;
+            return list;
+        }
 
         List<Chamado> listaChamado = user.getChamadosTecn();
         List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();

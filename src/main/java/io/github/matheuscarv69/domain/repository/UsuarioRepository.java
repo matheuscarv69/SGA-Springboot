@@ -12,17 +12,18 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNomeLike(String nome); //busca um usuario com o nome informado
 
-
     Usuario findByNome(String nome); //busca um usuario com o nome informado
 
     //@Query("select u from Usuario u where u.matricula = :matricula")
     @Query(value = "SELECT  ID, NOME, MATRICULA, EMAIL, LOGIN, SENHA, PHONE, ATIVO, ADMIN, TECN FROM USUARIO WHERE MATRICULA = :matricula", nativeQuery = true)
     Usuario buscaMatricula(@Param("matricula") String matricula); //busca um usuario pela matricula
 
-    @Query("select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
+    //@Query("select u from Usuario u left join fetch u.chamadosReq where u.id = :id")
+    @Query("select u from Usuario u left join fetch u.chamadosReq ch where u.id = :id and ch.ativo = true")
     Usuario findUsuarioFetchChamadosReq(@Param("id") Integer id);
 
-    @Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
+    //@Query("select u from Usuario u left join fetch u.chamadosTecn where u.id = :id and u.tecn = true")
+    @Query("select u from Usuario u left join fetch u.chamadosTecn ch where u.id = :id and u.tecn = true and ch.ativo = true")
     Usuario findUsuarioFetchChamadosTecn(@Param("id") Integer id);
 
     @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND TECN = TRUE", nativeQuery = true) //busca tecnicos
