@@ -7,6 +7,7 @@ import io.github.matheuscarv69.rest.dto.*;
 import io.github.matheuscarv69.service.ChamadoService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +26,14 @@ public class ChamadoController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Integer save(@RequestBody ChamadoDTO dto) {
+    public Integer save(@RequestBody @Valid ChamadoDTO dto) {
         Chamado chamado = service.salvar(dto);
-
         return chamado.getId();
     }
 
-    @PatchMapping("{id}")
-//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @PatchMapping("{id}")//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
-    public void updateStatus(@PathVariable Integer id, @RequestBody AtualizacaoStatusChamadoDTO dto) {
+    public void updateStatus(@PathVariable Integer id, @RequestBody @Valid AtualizacaoStatusChamadoDTO dto) {
 
         String novoStatus = dto.getNovoStatus();
 

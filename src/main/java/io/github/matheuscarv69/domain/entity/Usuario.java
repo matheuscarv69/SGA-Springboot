@@ -35,15 +35,15 @@ public class Usuario {
     private String email;
 
     @Column(name = "phone", length = 15)
-    @NotEmpty(message = "Campo telefone é obrigatório")
+    @NotEmpty(message = "Campo Telefone é obrigatório")
     private String phone;
 
     @Column
-    @NotEmpty(message = "Campo login é obrigatório")
+    @NotEmpty(message = "Campo Login é obrigatório")
     private String login;
 
     @Column
-    @NotEmpty(message = "Campo senha é obrigatório")
+    @NotEmpty(message = "Campo Senha é obrigatório")
     private String senha;
 
     @Column
