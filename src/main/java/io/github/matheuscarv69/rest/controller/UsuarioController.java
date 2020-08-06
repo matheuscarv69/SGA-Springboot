@@ -11,6 +11,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class UsuarioController {
 
     @PostMapping // salva um user
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario save(@RequestBody Usuario usuario) {
+    public Usuario save(@RequestBody @Valid Usuario usuario) {
 
         if (usuario.getMatricula().isEmpty()) {
             throw new RegraNegocioException("O campo de matrícula está vazio");
@@ -48,7 +49,7 @@ public class UsuarioController {
 
     @PutMapping("{id}") // atualiza um usuario
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Integer id, @RequestBody Usuario usuario) {
+    public void update(@PathVariable Integer id, @RequestBody @Valid Usuario usuario) {
         if (usuario.getMatricula().isEmpty()) {
             throw new RegraNegocioException("O campo de matrícula está vazio");
         }
@@ -62,21 +63,23 @@ public class UsuarioController {
 
                     Usuario user = repository.buscaMatricula(usuario.getMatricula());
 
-                    if (user == null) {
+                    if(user == null){
+                        System.out.println("Usuario: Atualizar " + user);
                         usuario.setId(usuarioExistente.getId());
                         repository.save(usuario);
-                        return usuarioExistente;
+                        return usuario;
+                    }else if(user.getMatricula() == usuarioExistente.getMatricula()){
+                        System.out.println("Matrículas são iguais");
+                        System.out.println("User: " + user.getMatricula());
+                        System.out.println("UsuarioExistente: " + usuarioExistente.getMatricula());
 
-                    } else {
-                        if (user.getMatricula() == usuarioExistente.getMatricula()) {
-                            usuario.setId(usuarioExistente.getId());
-
-                            repository.save(usuario);
-                            return usuarioExistente;
-                        } else {
-                            throw new RegraNegocioException("A matrícula informada já existe");
-                        }
+                        usuario.setId(usuarioExistente.getId());
+                        repository.save(usuario);
+                        return usuario;
+                    }else{
+                        throw new RegraNegocioException("A matrícula informada já existe e não pertence ao usuário informado");
                     }
+
                 }).orElseThrow(() ->
                 new UsuarioNaoEncontradoException());
 

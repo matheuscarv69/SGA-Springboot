@@ -1,8 +1,6 @@
 package io.github.matheuscarv69.rest;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,5 +12,9 @@ public class ApiErrors {
 
     public ApiErrors(String mensagemErro) {
         this.errors = Arrays.asList(mensagemErro);
+    }
+
+    public ApiErrors(List<String> errors) {
+        this.errors = errors;
     }
 }
