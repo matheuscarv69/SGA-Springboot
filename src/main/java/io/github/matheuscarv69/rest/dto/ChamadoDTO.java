@@ -11,22 +11,22 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class ChamadoDTO {
 
-    @NotNull(message = "Informe o ID do usuário.")
+    @NotNull(message = "{campo.id-usuario.obrigatorio}")
     private Integer requerente;
 
-    @NotEmpty(message = "Informe o Título")
+    @NotEmpty(message = "{campo.titulo.obrigatorio}")
     private String titulo;
 
-    @NotEmpty(message = "Informe a Descrição")
+    @NotEmpty(message = "{campo.descricao.obrigatorio}")
     private String descricao;
 
-    @NotEmpty(message = "Informe o Tipo do Chamado")
+    @NotEmpty(message = "{campo.tipo-chamado.obrigatorio}")
     private String tipo;
 
-    @NotNull(message = "Informe o Bloco")
+    @NotNull(message = "{campo.bloco-chamado.obrigatorio}")
     private Character bloco;
 
-    @NotNull(message = "Informe a sala")
+    @NotNull(message = "{campo.sala-chamado.obrigatorio}")
     private Integer sala;
 
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 public class AtualizacaoStatusChamadoDTO {
 
-    @NotEmpty(message = "Informe o Status")
+    @NotEmpty(message = "{campo.status.obrigatorio}")
     private String novoStatus;
 
 }

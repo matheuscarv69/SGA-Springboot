@@ -22,28 +22,28 @@ public class Usuario {
     private Integer id;
 
     @Column(name = "nome", length = 100)
-    @NotEmpty(message = "Campo Nome é obrigatório")
+    @NotEmpty(message = "{campo.nome.obrigatorio}")
     private String nome;
 
     @Column(name = "matricula", length = 13)
-    @Size(min = 12, max = 12, message = "A Matrícula deve ter 12 dígitos")
+    @Size(min = 12, max = 12, message = "{campo.matricula.obrigatorio}")
     private String matricula;
 
     @Column(name = "email", length = 50)
-    @NotEmpty(message = "Campo Email é obrigatório")
-    @Email(message = "Informe um Email válido")
+    @NotEmpty(message = "{campo.email.obrigatorio}")
+    @Email(message = "{campo.email.invalido}")
     private String email;
 
     @Column(name = "phone", length = 15)
-    @NotEmpty(message = "Campo Telefone é obrigatório")
+    @NotEmpty(message = "{campo.telefone.obrigatorio}")
     private String phone;
 
     @Column
-    @NotEmpty(message = "Campo Login é obrigatório")
+    @NotEmpty(message = "{campo.login.obrigatorio}")
     private String login;
 
     @Column
-    @NotEmpty(message = "Campo Senha é obrigatório")
+    @NotEmpty(message = "{campo.senha.obrigatorio}")
     private String senha;
 
     @Column
