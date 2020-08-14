@@ -14,6 +14,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Usuario findByNome(String nome); //busca um usuario com o nome informado
 
+    Optional<Usuario> findByLogin(String login); //busca um usuario pelo login
+
     //@Query("select u from Usuario u where u.matricula = :matricula")
     @Query(value = "SELECT  ID, NOME, MATRICULA, EMAIL, LOGIN, SENHA, PHONE, ATIVO, ADMIN, TECN FROM USUARIO WHERE MATRICULA = :matricula", nativeQuery = true)
     Usuario buscaMatricula(@Param("matricula") String matricula); //busca um usuario pela matricula
