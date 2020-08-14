@@ -91,7 +91,7 @@ public class ChamadoController {
         if (chamado.getDataFinal() == null) {
             dataSolucao = "Chamado ainda não foi solucionado.";
         } else {
-            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         }
 
         if (chamado.getTecnico() == null) {
@@ -112,7 +112,7 @@ public class ChamadoController {
                 .bloco(chamado.getBloco())
                 .sala(chamado.getSala())
                 .status(chamado.getStatusChamado().name())
-                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
+                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .dataSolucao(dataSolucao)
                 .tecnico(nomeTecn)
                 .matriculaTecn(matriculaTecn)

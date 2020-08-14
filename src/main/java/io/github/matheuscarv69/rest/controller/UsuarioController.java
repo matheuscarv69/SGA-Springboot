@@ -37,8 +37,6 @@ public class UsuarioController {
 
         Usuario user = repository.buscaMatricula(usuario.getMatricula());
 
-        System.out.println("Usuario : " + user);
-
         if (user == null) {
             return repository.save(usuario);
         } else {
@@ -63,12 +61,12 @@ public class UsuarioController {
 
                     Usuario user = repository.buscaMatricula(usuario.getMatricula());
 
-                    if(user == null){
+                    if (user == null) {
                         System.out.println("Usuario: Atualizar " + user);
                         usuario.setId(usuarioExistente.getId());
                         repository.save(usuario);
                         return usuario;
-                    }else if(user.getMatricula() == usuarioExistente.getMatricula()){
+                    } else if (user.getMatricula() == usuarioExistente.getMatricula()) {
                         System.out.println("Matrículas são iguais");
                         System.out.println("User: " + user.getMatricula());
                         System.out.println("UsuarioExistente: " + usuarioExistente.getMatricula());
@@ -76,7 +74,7 @@ public class UsuarioController {
                         usuario.setId(usuarioExistente.getId());
                         repository.save(usuario);
                         return usuario;
-                    }else{
+                    } else {
                         throw new RegraNegocioException("A matrícula informada já existe e não pertence ao usuário informado");
                     }
 
@@ -200,8 +198,8 @@ public class UsuarioController {
 
         user = repository.findUsuarioFetchChamadosReq(user.getId());
 
-        if(user == null){
-            List<InformacoesChamadoDTO> list = new ArrayList<>() ;
+        if (user == null) {
+            List<InformacoesChamadoDTO> list = new ArrayList<>();
             return list;
         }
 
@@ -228,8 +226,8 @@ public class UsuarioController {
 
         user = repository.findUsuarioFetchChamadosTecn(user.getId());
 
-        if(user == null){
-            List<InformacoesChamadoDTO> list = new ArrayList<>() ;
+        if (user == null) {
+            List<InformacoesChamadoDTO> list = new ArrayList<>();
             return list;
         }
 

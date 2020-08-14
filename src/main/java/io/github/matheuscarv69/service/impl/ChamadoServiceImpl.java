@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,17 +141,6 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .findById(tecnicoDTO.getIdTecnico())
                 .orElseThrow(() -> new UsuarioNaoEncontradoException());
 
-//        if (!user.isAtivo()) {
-//            throw new RegraNegocioException("O usuário não está ativo");
-//        } else if (!user.isTecn()) {
-//            throw new RegraNegocioException("O usuário não é técnico");
-//        } else if (chamado.getRequerente().getId() == user.getId()) {
-//            throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
-//        } else if (chamado.getRequerente().getId() == user.getId() && user.isAdmin()) {
-//            chamado.setTecnico(user);
-//            chamado.setStatusChamado(StatusChamado.PROCESSANDO);
-//        }
-
         if (!user.isAtivo()) {
             throw new RegraNegocioException("O usuário não está ativo");
         } else if (!user.isTecn()) {
@@ -159,7 +148,7 @@ public class ChamadoServiceImpl implements ChamadoService {
         } else if (user.isAdmin()) {
             chamado.setTecnico(user);
             chamado.setStatusChamado(StatusChamado.PROCESSANDO);
-        }else if (chamado.getRequerente().getId() == user.getId()) {
+        } else if (chamado.getRequerente().getId() == user.getId()) {
             throw new RegraNegocioException("O mesmo requerente não pode ser atribuído como técnico");
         }
 
@@ -173,6 +162,7 @@ public class ChamadoServiceImpl implements ChamadoService {
     public List<Chamado> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
 
         filtro = converterDTO(filtro, filtroDTO);
+        System.out.println("filtro: " + filtro);
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
@@ -180,7 +170,6 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
         Example example = Example.of(filtro, matcher);
-
 
         return repository.findAll(example);
     }
@@ -236,13 +225,18 @@ public class ChamadoServiceImpl implements ChamadoService {
         }
 
         if (filtroDTO.getDataInicial() != null) {
-            System.out.println("Data Inicial: " + LocalDate.parse(filtroDTO.getDataInicial(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//            LocalDateTime dateTime = LocalDate.parse(filtroDTO.getDataInicial(), formatter).atStartOfDay();
+//
+//            filtro.setDataInicio(dateTime);
+//
+//            System.out.println("Data do filtro: " + filtro.getDataInicio());
 
+            //filtro.setDataInicio(LocalDateTime.parse(filtroDTO.getDataInicial(), DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
             filtro.setDataInicio(LocalDate.parse(filtroDTO.getDataInicial(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
 
         if (filtroDTO.getDataSolucao() != null) {
-            System.out.println("Data Solução: " + LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             filtro.setDataFinal(LocalDate.parse(filtroDTO.getDataSolucao(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         }
 
