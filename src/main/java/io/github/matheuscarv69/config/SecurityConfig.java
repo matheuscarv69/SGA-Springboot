@@ -38,45 +38,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST, "/api/usuarios")
                 .permitAll()
                     // update ok
-                    .antMatchers(HttpMethod.PUT,"/api/usuarios/**")
+                    .antMatchers(HttpMethod.PUT,"/api/usuarios/updt/**")
                 .hasRole("USER")
-                    // desliga user
+                    // desliga user ok
                     .antMatchers(HttpMethod.DELETE, "/api/usuarios/deslUser/**")
                 .hasRole("ADMIN")
-                    // ativa user
+                    // ativa user ok
                     .antMatchers(HttpMethod.PATCH, "/api/usuarios/ativUser/**")
                 .hasRole("ADMIN")
-                    // busca por id
-                    .antMatchers(HttpMethod.GET,"/api/usuarios/**")
-                // mudar isso depois para somente tecnico e admin.hasAnyRole("USER","TECN", "ADMIN")
-                .permitAll()
-
-//                    // busca tecnicos
-//                    .antMatchers(HttpMethod.GET, "/api/usuarios/tecn")
-//                .hasAnyRole("TECN", "ADMIN")
-//                    // busca administradores
-//                    .antMatchers(HttpMethod.GET, "/api/usuarios/admin")
-//                .hasAnyRole("TECN","ADMIN")
-//                    // set tecnico
-//                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setTecn/**")
-//                .hasRole("ADMIN")
-//                    // set administradores
-//                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setAdmin/**")
-//                .hasRole("ADMIN")
-//                    // busca chamados req
-//                    .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosReq/**")
-//                .authenticated()
+                    // busca por id ok
+                    .antMatchers(HttpMethod.GET,"/api/usuarios/getId/**")
+                .hasAnyRole("TECN", "ADMIN")
+                // busca por parametros ok
+                    .antMatchers(HttpMethod.GET, "/api/usuarios")
+                .hasAnyRole("TECN","ADMIN")
+                    // busca tecnicos ok
+                    .antMatchers(HttpMethod.GET, "/api/usuarios/tecn")
+                .hasAnyRole("TECN", "ADMIN")
+                    // busca administradores ok
+                .antMatchers(HttpMethod.GET, "/api/usuarios/admin")
+                .hasAnyRole("TECN","ADMIN")
+                    // set tecnico ok
+                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setTecn/**")
+                .hasRole("ADMIN")
+                    // set administradores ok
+                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setAdmin/**")
+                .hasRole("ADMIN")
+                    // busca chamados req ok
+                    .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosReq/**")
+                .authenticated()
 //                    // busca chamados tecn
 //                    .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosTecn/**")
 //                .hasAnyRole("TECN", "ADMIN")
-                    // busca por parametros
-//                    .antMatchers(HttpMethod.GET, "/api/usuarios")
-//                .permitAll()
                     .antMatchers("/api/chamados/**")
-                .hasRole("ADMIN")
+                .authenticated()
                 .anyRequest().authenticated()
                 .and()
                     .httpBasic();
-//.authenticated()
+
     }
 }

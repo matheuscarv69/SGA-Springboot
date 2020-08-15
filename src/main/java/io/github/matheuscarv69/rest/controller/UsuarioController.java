@@ -59,7 +59,7 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("{id}") // atualiza um usuario
+    @PutMapping("/updt/{id}") // atualiza um usuario
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Integer id, @RequestBody @Valid Usuario usuario) {
         if (usuario.getMatricula().isEmpty()) {
@@ -152,7 +152,7 @@ public class UsuarioController {
                 new UsuarioNaoEncontradoException());
     }
 
-    @GetMapping("{id}") // busca um user por id
+    @GetMapping("/getId/{id}") // busca um user por id
     public Usuario getUsuarioById(@PathVariable Integer id) {
 
         return repository
