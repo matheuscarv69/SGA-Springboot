@@ -6,14 +6,17 @@ import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static io.github.matheuscarv69.rest.controller.ChamadoController.converter;
 
@@ -22,6 +25,9 @@ import static io.github.matheuscarv69.rest.controller.ChamadoController.converte
 public class UsuarioController {
 
     private UsuarioRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UsuarioController(UsuarioRepository usuarioRepository) {
         this.repository = usuarioRepository;
@@ -36,12 +42,20 @@ public class UsuarioController {
         }
 
         Usuario user = repository.buscaMatricula(usuario.getMatricula());
+        Optional<Usuario> user2 = repository.findByLogin(usuario.getLogin());
 
-        if (user == null) {
-            return repository.save(usuario);
-        } else {
+        if (user != null) {
             throw new RegraNegocioException("A matrícula informada já existe");
+        } else if (user2.isPresent()) {
+            throw new RegraNegocioException("O login informado já existe");
+        } else {
+            String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+
+            usuario.setSenha(senhaCriptografada);
+
+            return repository.save(usuario);
         }
+
 
     }
 
@@ -60,30 +74,50 @@ public class UsuarioController {
                     }
 
                     Usuario user = repository.buscaMatricula(usuario.getMatricula());
+                    Optional<Usuario> user2 = repository.findByLogin(usuario.getLogin());
+
+                    if(user2.isPresent()){
+                        if(usuarioExistente.getLogin() == user2.get().getLogin()){
+                            boolean igual = true;
+                        }else if(usuarioExistente.getMatricula() == user2.get().getMatricula()){
+                            boolean igual = true;
+                        }else{
+                            throw new RegraNegocioException("O login informado já está existe e não pertence ao usuário informado");
+                        }
+                    }
 
                     if (user == null) {
-                        System.out.println("Usuario: Atualizar " + user);
                         usuario.setId(usuarioExistente.getId());
+
+                        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+
+                        usuario.setSenha(senhaCriptografada);
+
                         repository.save(usuario);
                         return usuario;
-                    } else if (user.getMatricula() == usuarioExistente.getMatricula()) {
+                    } else if (usuarioExistente.getMatricula() == user.getMatricula()) {
                         System.out.println("Matrículas são iguais");
                         System.out.println("User: " + user.getMatricula());
                         System.out.println("UsuarioExistente: " + usuarioExistente.getMatricula());
 
                         usuario.setId(usuarioExistente.getId());
+                        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+
+                        usuario.setSenha(senhaCriptografada);
+
                         repository.save(usuario);
                         return usuario;
                     } else {
                         throw new RegraNegocioException("A matrícula informada já existe e não pertence ao usuário informado");
                     }
 
+
                 }).orElseThrow(() ->
                 new UsuarioNaoEncontradoException());
 
     }
 
-    @DeleteMapping("{id}") // deleta um user
+    @DeleteMapping("/deslUser/{id}") // deleta um user
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desligarUser(@PathVariable Integer id) {
         repository
@@ -101,7 +135,7 @@ public class UsuarioController {
                 new UsuarioNaoEncontradoException());
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/ativUser/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void ativarUser(@PathVariable Integer id) {
         repository.findById(id)
@@ -243,8 +277,6 @@ public class UsuarioController {
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
     public List<Usuario> buscarPorPar(Usuario filtro) {
-
-        //filtro.setStatus(true);
 
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
