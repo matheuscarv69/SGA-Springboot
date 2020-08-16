@@ -87,7 +87,7 @@ public class ChamadoServiceImpl implements ChamadoService {
     }
 
     @Override
-    @Transactional // desligar chamado
+    @Transactional
     public void arquivarChamado(Integer id) {
         repository.findById(id)
                 .map(c -> {

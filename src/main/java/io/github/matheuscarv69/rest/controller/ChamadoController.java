@@ -31,7 +31,7 @@ public class ChamadoController {
         return chamado.getId();
     }
 
-    @PatchMapping("{id}")//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @PatchMapping("/updt/{id}")//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id, @RequestBody @Valid AtualizacaoStatusChamadoDTO dto) {
 
@@ -41,19 +41,19 @@ public class ChamadoController {
 
     }
 
-    @DeleteMapping("{id}") // deleta um chamado pelo id
+    @DeleteMapping("/arqCham/{id}") // deleta um chamado pelo id
     @ResponseStatus(NO_CONTENT)
     public void arquivarChamado(@PathVariable Integer id) {
         service.arquivarChamado(id);
     }
 
-    @PatchMapping("/desArqChamado/{id}")
+    @PatchMapping("/desarqCham/{id}")
     @ResponseStatus(NO_CONTENT)
     public void desarquivarChamado(@PathVariable Integer id) {
         service.desarquivarChamado(id);
     }
 
-    @GetMapping("{id}") // busca um chamado por id
+    @GetMapping("/getId/{id}") // busca um chamado por id
     public InformacoesChamadoDTO getById(@PathVariable Integer id) {
         return service
                 .buscarChamadoPorId(id)
@@ -91,7 +91,7 @@ public class ChamadoController {
         if (chamado.getDataFinal() == null) {
             dataSolucao = "Chamado ainda não foi solucionado.";
         } else {
-            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
         if (chamado.getTecnico() == null) {
