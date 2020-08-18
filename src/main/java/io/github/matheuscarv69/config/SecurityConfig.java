@@ -50,6 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // save ok
                     .antMatchers(HttpMethod.POST, "/api/usuarios")
                 .permitAll()
+                // autenticar
+                    .antMatchers(HttpMethod.POST, "/api/usuarios/auth")
+                .permitAll()
                 // update ok
                     .antMatchers(HttpMethod.PUT, "/api/usuarios/updt/**")
                 .hasRole("USER")

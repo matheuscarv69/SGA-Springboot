@@ -4,14 +4,23 @@ import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.RegraNegocioException;
+import io.github.matheuscarv69.exception.SenhaInvalidaException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
+import io.github.matheuscarv69.rest.dto.CredenciaisDTO;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
+import io.github.matheuscarv69.rest.dto.TokenDTO;
+import io.github.matheuscarv69.security.jwt.JwtService;
+import io.github.matheuscarv69.service.impl.UsuarioLoginServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -24,10 +33,14 @@ import static io.github.matheuscarv69.rest.controller.ChamadoController.converte
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    private UsuarioRepository repository;
-
+    @Autowired
+    private UsuarioLoginServiceImpl usuarioLoginService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+
+    private UsuarioRepository repository;
 
     public UsuarioController(UsuarioRepository usuarioRepository) {
         this.repository = usuarioRepository;
@@ -76,12 +89,12 @@ public class UsuarioController {
                     Usuario user = repository.buscaMatricula(usuario.getMatricula());
                     Optional<Usuario> user2 = repository.findByLogin(usuario.getLogin());
 
-                    if(user2.isPresent()){
-                        if(usuarioExistente.getLogin() == user2.get().getLogin()){
+                    if (user2.isPresent()) {
+                        if (usuarioExistente.getLogin() == user2.get().getLogin()) {
                             boolean igual = true;
-                        }else if(usuarioExistente.getMatricula() == user2.get().getMatricula()){
+                        } else if (usuarioExistente.getMatricula() == user2.get().getMatricula()) {
                             boolean igual = true;
-                        }else{
+                        } else {
                             throw new RegraNegocioException("O login informado já está existe e não pertence ao usuário informado");
                         }
                     }
@@ -289,4 +302,22 @@ public class UsuarioController {
         return repository.findAll(example);
     }
 
+    @PostMapping("/auth")
+    public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais) {
+        try {
+            Usuario usuario = Usuario
+                    .builder()
+                    .login(credenciais.getLogin())
+                    .senha(credenciais.getSenha())
+                    .build();
+            UserDetails usuarioAutenticado = usuarioLoginService.autenticar(usuario);
+            String token = jwtService.gerarToken(usuario);
+
+            return new TokenDTO(usuario.getLogin(), token);
+
+        } catch (UsernameNotFoundException | SenhaInvalidaException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+
+    }
 }
