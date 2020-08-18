@@ -1,4 +1,4 @@
-package io.github.matheuscarv69;
+package io.github.matheuscarv69.security.jwt;
 
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.jsonwebtoken.Claims;
@@ -68,6 +68,6 @@ public class JwtService {
         return (String) obterClaims(token).getSubject();
     }
 
-    
+
 
 }
