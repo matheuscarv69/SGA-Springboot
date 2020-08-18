@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioServiceImpl implements UserDetailsService {
+public class UsuarioLoginServiceImpl implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder encoder;

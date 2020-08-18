@@ -1,6 +1,6 @@
 package io.github.matheuscarv69.config;
 
-import io.github.matheuscarv69.service.impl.UsuarioServiceImpl;
+import io.github.matheuscarv69.service.impl.UsuarioLoginServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UsuarioServiceImpl usuarioService;
+    private UsuarioLoginServiceImpl usuarioService;
 
     @Bean // Faz a criptografia
     public PasswordEncoder passwordEncoder() {
