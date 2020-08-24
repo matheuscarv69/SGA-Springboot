@@ -23,6 +23,8 @@ public interface ChamadoService {
 
     void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO);
 
+    void removerTecn(Integer id);
+
     void arquivarChamado(Integer id);
 
     void desarquivarChamado(Integer id);

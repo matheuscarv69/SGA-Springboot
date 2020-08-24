@@ -159,6 +159,24 @@ public class ChamadoServiceImpl implements ChamadoService {
     }
 
     @Override
+    @Transactional
+    public void removerTecn(Integer id){
+        Chamado chamado = repository
+                .findById(id).map(c -> {
+                    if (!c.isAtivo()) {
+                        throw new RegraNegocioException("O chamado não está ativo");
+                    }
+                    return c;
+                })
+                .orElseThrow(() -> new ChamadoNaoEncontradoException());
+
+        chamado.setTecnico(null);
+        chamado.setStatusChamado(StatusChamado.PENDENTE);
+
+        repository.save(chamado);
+    }
+
+    @Override
     public List<Chamado> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
 
         filtro = converterDTO(filtro, filtroDTO);

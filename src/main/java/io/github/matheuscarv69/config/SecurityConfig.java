@@ -70,10 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyRole("TECN", "ADMIN")
                 // busca tecnicos ok
                     .antMatchers(HttpMethod.GET, "/api/usuarios/tecn")
-                .hasAnyRole("ADMIN")
+                .hasRole("ADMIN")
                 // busca administradores ok
                     .antMatchers(HttpMethod.GET, "/api/usuarios/admin")
-                .hasAnyRole("ADMIN")
+                .hasRole("ADMIN")
                 // set tecnico ok
                     .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setTecn/**")
                 .hasRole("ADMIN")
@@ -108,6 +108,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Atribuir tecnico ao chamado
                     .antMatchers(HttpMethod.PATCH, "/api/chamados/atribTecn/**")
                 .hasAnyRole("TECN", "ADMIN")
+                    .antMatchers(HttpMethod.PATCH, "/api/chamados/removerTecn/**")
+                .hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                     .sessionManagement()

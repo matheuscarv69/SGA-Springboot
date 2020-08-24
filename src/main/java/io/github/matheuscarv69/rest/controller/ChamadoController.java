@@ -82,6 +82,12 @@ public class ChamadoController {
         service.atribuirTecn(id, tecnicoDTO);
     }
 
+    @PatchMapping("/removerTecn/{id}")
+    @ResponseStatus(OK)
+    public void removerTecn(@PathVariable Integer id){
+        service.removerTecn(id);
+    }
+
     public final static InformacoesChamadoDTO converter(Chamado chamado) {
 
         String dataSolucao = new String();
