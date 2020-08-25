@@ -15,8 +15,6 @@ public interface ChamadoService {
 
     Optional<Chamado> buscarChamadoPorId(Integer id);
 
-    //List<Chamado> buscarPorPar(Chamado filtro);
-
     List<Chamado> buscarPorPar(Chamado filtro1, FiltroChamadoDTO filtroDTO);
 
     void atualizaStatus(Integer id, StatusChamado statusChamado);

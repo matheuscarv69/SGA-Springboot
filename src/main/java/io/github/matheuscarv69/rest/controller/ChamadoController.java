@@ -31,14 +31,13 @@ public class ChamadoController {
         return chamado.getId();
     }
 
-    @PatchMapping("/updt/{id}")//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @PatchMapping("/updt/{id}")
+//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id, @RequestBody @Valid AtualizacaoStatusChamadoDTO dto) {
-
         String novoStatus = dto.getNovoStatus();
 
         service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
-
     }
 
     @DeleteMapping("/arqCham/{id}") // deleta um chamado pelo id
@@ -60,7 +59,6 @@ public class ChamadoController {
                 .map(chamado -> converter(chamado))
                 .orElseThrow(() ->
                         new ChamadoNaoEncontradoException());
-
     }
 
     @GetMapping // busca por parametro e todos
@@ -84,7 +82,7 @@ public class ChamadoController {
 
     @PatchMapping("/removerTecn/{id}")
     @ResponseStatus(OK)
-    public void removerTecn(@PathVariable Integer id){
+    public void removerTecn(@PathVariable Integer id) {
         service.removerTecn(id);
     }
 
@@ -125,5 +123,4 @@ public class ChamadoController {
                 .ativo(chamado.isAtivo())
                 .build();
     }
-
 }
