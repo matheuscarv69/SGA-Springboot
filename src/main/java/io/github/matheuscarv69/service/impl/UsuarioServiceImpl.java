@@ -19,13 +19,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.matheuscarv69.rest.controller.ChamadoController.converter;
+import static io.github.matheuscarv69.service.impl.ChamadoServiceImpl.converterChamadoParaInformacao;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final JwtService jwtService;
 
     @Override //ok
+    @Transactional
     public Usuario salvar(Usuario usuario) {
         if (usuario.getMatricula().isEmpty()) {
             throw new RegraNegocioException("O campo de matrícula está vazio");
@@ -59,6 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public void atualizarUser(Integer id, Usuario usuario) {
         if (usuario.getMatricula().isEmpty()) {
             throw new RegraNegocioException("O campo de matrícula está vazio");
@@ -116,6 +120,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public void desligarUser(Integer id) {
         repository
                 .findById(id)
@@ -133,6 +138,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public void ativarUser(Integer id) {
         repository.findById(id)
                 .map(usuarioExistente -> {
@@ -179,6 +185,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public void setTecn(Integer id, Usuario tecn) {
         repository.findById(id)
                 .map(usuario -> {
@@ -197,6 +204,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public void setAdmin(Integer id, Usuario admin) {
         repository.findById(id)
                 .map(usuario -> {
@@ -233,7 +241,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();
 
         for (Chamado c : listaChamado) {
-            listaDTO.add(converter(c));
+            listaDTO.add(converterChamadoParaInformacao(c));
         }
 
         return listaDTO;
@@ -260,7 +268,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         List<InformacoesChamadoDTO> listaDTO = new ArrayList<>();
 
         for (Chamado c : listaChamado) {
-            listaDTO.add(converter(c));
+            listaDTO.add(converterChamadoParaInformacao(c));
         }
 
         return listaDTO;
@@ -280,6 +288,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override //ok
+    @Transactional
     public TokenDTO autenticar(CredenciaisDTO credenciais) {
         try {
             Usuario usuario = Usuario

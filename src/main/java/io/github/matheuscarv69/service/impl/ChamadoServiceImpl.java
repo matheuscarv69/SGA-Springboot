@@ -11,6 +11,7 @@ import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.ChamadoDTO;
 import io.github.matheuscarv69.rest.dto.FiltroChamadoDTO;
+import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.rest.dto.TecnicoDTO;
 import io.github.matheuscarv69.service.ChamadoService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -176,9 +178,9 @@ public class ChamadoServiceImpl implements ChamadoService {
     }
 
     @Override
-    public List<Chamado> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+    public List<InformacoesChamadoDTO> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
 
-        filtro = converterDTO(filtro, filtroDTO);
+        filtro = converterDTOBuscaPorPar(filtro, filtroDTO);
         System.out.println("filtro: " + filtro);
 
         ExampleMatcher matcher = ExampleMatcher
@@ -188,10 +190,18 @@ public class ChamadoServiceImpl implements ChamadoService {
 
         Example example = Example.of(filtro, matcher);
 
-        return repository.findAll(example);
+        List<Chamado> list = repository.findAll(example);
+
+        List<InformacoesChamadoDTO> list2 = new ArrayList<>();
+
+        for (Chamado c : list) {
+            list2.add(converterChamadoParaInformacao(c));
+        }
+
+        return list2;
     }
 
-    public Chamado converterDTO(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+    public Chamado converterDTOBuscaPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
         Usuario req = new Usuario();
         Usuario tec = new Usuario();
         Usuario aux = new Usuario();
@@ -268,4 +278,41 @@ public class ChamadoServiceImpl implements ChamadoService {
         return filtro;
     }
 
+    public final static InformacoesChamadoDTO converterChamadoParaInformacao(Chamado chamado) {
+
+        String dataSolucao = new String();
+        String nomeTecn = new String();
+        String matriculaTecn = new String();
+
+        if (chamado.getDataFinal() == null) {
+            dataSolucao = "Chamado ainda não foi solucionado.";
+        } else {
+            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+
+        if (chamado.getTecnico() == null) {
+            nomeTecn = "Técnico não atribuído ao chamado.";
+            matriculaTecn = "";
+        } else {
+            nomeTecn = chamado.getTecnico().getNome();
+            matriculaTecn = chamado.getTecnico().getMatricula();
+        }
+
+        return InformacoesChamadoDTO.builder()
+                .id(chamado.getId())
+                .requerente(chamado.getRequerente().getNome())
+                .matricula(chamado.getRequerente().getMatricula())
+                .titulo(chamado.getTitulo())
+                .descricao(chamado.getDescricao())
+                .tipo(chamado.getTipoChamado().toString())
+                .bloco(chamado.getBloco())
+                .sala(chamado.getSala())
+                .status(chamado.getStatusChamado().name())
+                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .dataSolucao(dataSolucao)
+                .tecnico(nomeTecn)
+                .matriculaTecn(matriculaTecn)
+                .ativo(chamado.isAtivo())
+                .build();
+    }
 }

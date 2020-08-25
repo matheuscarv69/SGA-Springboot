@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.matheuscarv69.service.impl.ChamadoServiceImpl.converterChamadoParaInformacao;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -56,22 +57,14 @@ public class ChamadoController {
     public InformacoesChamadoDTO getById(@PathVariable Integer id) {
         return service
                 .buscarChamadoPorId(id)
-                .map(chamado -> converter(chamado))
+                .map(chamado -> converterChamadoParaInformacao(chamado))
                 .orElseThrow(() ->
                         new ChamadoNaoEncontradoException());
     }
 
     @GetMapping // busca por parametro e todos
     public List<InformacoesChamadoDTO> find(Chamado filtro, FiltroChamadoDTO filtroDTO) {
-        List<Chamado> list = service.buscarPorPar(filtro, filtroDTO);
-
-        List<InformacoesChamadoDTO> list2 = new ArrayList<>();
-
-        for (Chamado c : list) {
-            list2.add(converter(c));
-        }
-
-        return list2;
+        return service.buscarPorPar(filtro, filtroDTO);
     }
 
     @PatchMapping("/atribTecn/{id}")
@@ -86,41 +79,4 @@ public class ChamadoController {
         service.removerTecn(id);
     }
 
-    public final static InformacoesChamadoDTO converter(Chamado chamado) {
-
-        String dataSolucao = new String();
-        String nomeTecn = new String();
-        String matriculaTecn = new String();
-
-        if (chamado.getDataFinal() == null) {
-            dataSolucao = "Chamado ainda não foi solucionado.";
-        } else {
-            dataSolucao = chamado.getDataFinal().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        }
-
-        if (chamado.getTecnico() == null) {
-            nomeTecn = "Técnico não atribuído ao chamado.";
-            matriculaTecn = "";
-        } else {
-            nomeTecn = chamado.getTecnico().getNome();
-            matriculaTecn = chamado.getTecnico().getMatricula();
-        }
-
-        return InformacoesChamadoDTO.builder()
-                .id(chamado.getId())
-                .requerente(chamado.getRequerente().getNome())
-                .matricula(chamado.getRequerente().getMatricula())
-                .titulo(chamado.getTitulo())
-                .descricao(chamado.getDescricao())
-                .tipo(chamado.getTipoChamado().toString())
-                .bloco(chamado.getBloco())
-                .sala(chamado.getSala())
-                .status(chamado.getStatusChamado().name())
-                .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                .dataSolucao(dataSolucao)
-                .tecnico(nomeTecn)
-                .matriculaTecn(matriculaTecn)
-                .ativo(chamado.isAtivo())
-                .build();
-    }
 }
