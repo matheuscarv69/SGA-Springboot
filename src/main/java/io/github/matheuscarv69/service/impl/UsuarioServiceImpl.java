@@ -79,9 +79,9 @@ public class UsuarioServiceImpl implements UsuarioService {
                     Optional<Usuario> user2 = repository.findByLogin(usuario.getLogin());
 
                     if (user2.isPresent()) {
-                        if (usuarioExistente.getLogin() == user2.get().getLogin()) {
+                        if (usuarioExistente.getLogin().equals(user2.get().getLogin())) {
                             boolean igual = true;
-                        } else if (usuarioExistente.getMatricula() == user2.get().getMatricula()) {
+                        } else if (usuarioExistente.getMatricula().equals(user2.get().getMatricula())) {
                             boolean igual = true;
                         } else {
                             throw new RegraNegocioException("O login informado já está existe e não pertence ao usuário informado");
@@ -97,7 +97,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
                         repository.save(usuario);
                         return usuario;
-                    } else if (usuarioExistente.getMatricula() == user.getMatricula()) {
+                    } else if (usuarioExistente.getMatricula().equals(user.getMatricula())) {
                         System.out.println("Matrículas são iguais");
                         System.out.println("User: " + user.getMatricula());
                         System.out.println("UsuarioExistente: " + usuarioExistente.getMatricula());
