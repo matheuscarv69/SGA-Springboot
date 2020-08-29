@@ -167,11 +167,17 @@ public class ChamadoServiceImpl implements ChamadoService {
                     if (!c.isAtivo()) {
                         throw new RegraNegocioException("O chamado não está ativo");
                     }
+
+                    if( c.getTecnico() == null){
+                        throw new RegraNegocioException("Não existem técnicos atribuídos ao chamado");
+                    }
+
                     return c;
                 })
                 .orElseThrow(() -> new ChamadoNaoEncontradoException());
 
         chamado.setTecnico(null);
+        chamado.setDataFinal(null);
         chamado.setStatusChamado(StatusChamado.PENDENTE);
 
         repository.save(chamado);

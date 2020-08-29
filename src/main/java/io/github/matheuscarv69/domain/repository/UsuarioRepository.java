@@ -28,7 +28,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("select u from Usuario u left join fetch u.chamadosTecn ch where u.id = :id and u.tecn = true and ch.ativo = true")
     Usuario findUsuarioFetchChamadosTecn(@Param("id") Integer id);
 
-    @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND TECN = TRUE", nativeQuery = true) //busca tecnicos
+    @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND ADMIN = FALSE AND TECN = TRUE", nativeQuery = true) //busca tecnicos
     List<Usuario> findTecnicos();
 
     @Query(value = "SELECT * FROM USUARIO WHERE ATIVO = TRUE AND ADMIN = TRUE", nativeQuery = true) //busca administradores

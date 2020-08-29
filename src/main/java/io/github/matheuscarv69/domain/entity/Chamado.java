@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class Chamado {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
@@ -45,7 +45,9 @@ public class Chamado {
     @Enumerated(EnumType.STRING)
     private StatusChamado statusChamado;
 
-    //@JsonIgnore
+//    @Column
+//    private Byte[] imagem;
+
     @Column
     private boolean ativo = true;
 

@@ -21,7 +21,7 @@ import java.util.List;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
@@ -49,6 +49,10 @@ public class Usuario {
     @Column
     @NotEmpty(message = "{campo.senha.obrigatorio}")
     private String senha;
+
+//    @JsonIgnore
+//    @Column
+//    private Byte[] imagem;
 
     @Column
     private boolean ativo = true;
