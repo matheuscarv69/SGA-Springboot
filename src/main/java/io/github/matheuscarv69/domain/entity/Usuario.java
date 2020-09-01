@@ -50,9 +50,9 @@ public class Usuario {
     @NotEmpty(message = "{campo.senha.obrigatorio}")
     private String senha;
 
-//    @JsonIgnore
-//    @Column
-//    private Byte[] imagem;
+    @JsonIgnore
+    @Column
+    private byte[] imagem;
 
     @Column
     private boolean ativo = true;

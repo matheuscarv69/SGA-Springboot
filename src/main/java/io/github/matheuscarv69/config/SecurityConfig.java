@@ -86,6 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // busca chamados tecn ok
                     .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosTecn/**")
                 .hasAnyRole("TECN", "ADMIN")
+                    .antMatchers("api/usuarios/uploadFile/**")
+                .hasRole("USER")
                 // CHAMADO
                 // Save Chamado
                     .antMatchers(HttpMethod.POST, "/api/chamados")
