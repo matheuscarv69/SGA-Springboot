@@ -3,6 +3,7 @@ package io.github.matheuscarv69.service.impl;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
+import io.github.matheuscarv69.exception.LoginNotFoundException;
 import io.github.matheuscarv69.exception.RegraNegocioException;
 import io.github.matheuscarv69.exception.SenhaInvalidaException;
 import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
@@ -301,8 +302,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
             return new TokenDTO(usuario.getLogin(), token);
 
-        } catch (UsernameNotFoundException | SenhaInvalidaException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (LoginNotFoundException e){
+            throw new LoginNotFoundException();
         }
+//        catch (UsernameNotFoundException e) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+//        }
+
     }
 }

@@ -33,7 +33,7 @@ public class FileServiceImpl implements FileService {
         Usuario usuario = repository.findById(usuarioId)
                 .map(user -> {
                     user.setImagem(bytes);
-                    repository.save(user);
+                    repository.saveAndFlush(user);
                     return user;
                 }).orElseThrow(() -> new UsuarioNaoEncontradoException());
 

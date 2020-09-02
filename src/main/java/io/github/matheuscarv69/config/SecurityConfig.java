@@ -86,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // busca chamados tecn ok
                     .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosTecn/**")
                 .hasAnyRole("TECN", "ADMIN")
+                // Upload foto de perfil
                     .antMatchers("api/usuarios/uploadFile/**")
                 .hasRole("USER")
                 // CHAMADO
@@ -110,8 +111,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Atribuir tecnico ao chamado
                     .antMatchers(HttpMethod.PATCH, "/api/chamados/atribTecn/**")
                 .hasAnyRole("TECN", "ADMIN")
+                // Remover tecnico do chamado
                     .antMatchers(HttpMethod.PATCH, "/api/chamados/removerTecn/**")
-                .hasRole("ADMIN")
+                .hasAnyRole("TECN","ADMIN")
                 .anyRequest().authenticated()
                 .and()
                     .sessionManagement()

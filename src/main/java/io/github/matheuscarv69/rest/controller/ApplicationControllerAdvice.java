@@ -1,10 +1,9 @@
 package io.github.matheuscarv69.rest.controller;
 
-import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
-import io.github.matheuscarv69.exception.RegraNegocioException;
-import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
+import io.github.matheuscarv69.exception.*;
 import io.github.matheuscarv69.rest.ApiErrors;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -49,6 +48,27 @@ public class ApplicationControllerAdvice {
                 .collect(Collectors.toList());
 
         return new ApiErrors(errors);
+    }
+
+    @ExceptionHandler(ArquivoInvalidoException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleArquivoInvalidoException(ArquivoInvalidoException ex){
+        String mensagemErro = ex.getMessage();
+        return new ApiErrors(mensagemErro);
+    }
+
+    @ExceptionHandler(SenhaInvalidaException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiErrors handleSenhaInvalidaException(SenhaInvalidaException ex){
+        String mensagemErro = ex.getMessage();
+        return new ApiErrors(mensagemErro);
+    }
+
+    @ExceptionHandler(LoginNotFoundException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public ApiErrors handleLoginNotFoundException(LoginNotFoundException ex){
+        String mensagemErro = ex.getMessage();
+        return new ApiErrors(mensagemErro);
     }
 
 }

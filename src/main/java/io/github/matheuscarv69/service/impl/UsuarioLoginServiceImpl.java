@@ -2,6 +2,7 @@ package io.github.matheuscarv69.service.impl;
 
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
+import io.github.matheuscarv69.exception.LoginNotFoundException;
 import io.github.matheuscarv69.exception.SenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -33,7 +34,8 @@ public class UsuarioLoginServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Usuario usuario = usuarioRepository.findByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado na base de dados."));
+                .orElseThrow(() -> new LoginNotFoundException());
+//                        () -> new UsernameNotFoundException("Login do Usuário não encontrado na base de dados"));
 
         String[] roles;
 
