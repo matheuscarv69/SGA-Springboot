@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("api/usuarios")
+@RequestMapping("api/file")
 public class FileController {
 
     private FileService service;
@@ -17,14 +17,23 @@ public class FileController {
         this.service = service;
     }
 
-    @PostMapping("/uploadFile/{usuarioId}")
+    @PostMapping("/upldUserImg/{usuarioId}")
     @ResponseStatus(HttpStatus.OK)
-    public File uploadFile(@RequestParam("file") MultipartFile file, @PathVariable(name = "usuarioId") Integer usuarioId) {
-        if(file.isEmpty()){
+    public File uploadFileUser(@RequestParam("file") MultipartFile file, @PathVariable(name = "usuarioId") Integer usuarioId) {
+        if (file.isEmpty()) {
             throw new ArquivoInvalidoException("Nenhum arquivo foi selecionado");
         }
 
-        return service.save(file, usuarioId);
+        return service.saveImgUser(file, usuarioId);
+    }
+
+    @PostMapping("/upldCalledImg/{chamadoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public File uploadFileCalled(@RequestParam("file") MultipartFile file, @PathVariable(name = "chamadoId") Integer chamadoId) {
+        if (file.isEmpty()) {
+            throw new ArquivoInvalidoException("Nenhum arquivo foi selecionado");
+        }
+        return service.saveImgCalled(file, chamadoId);
     }
 
 

@@ -1,5 +1,6 @@
 package io.github.matheuscarv69.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.domain.enums.TipoChamado;
 import lombok.AllArgsConstructor;
@@ -45,8 +46,9 @@ public class Chamado {
     @Enumerated(EnumType.STRING)
     private StatusChamado statusChamado;
 
-//    @Column
-//    private Byte[] imagem;
+    @JsonIgnore
+    @Column
+    private byte[] imagem;
 
     @Column
     private boolean ativo = true;

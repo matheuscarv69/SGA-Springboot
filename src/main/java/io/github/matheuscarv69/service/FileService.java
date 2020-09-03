@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
-    File save(MultipartFile multipartFile, Integer usuarioId);
+    File saveImgUser(MultipartFile multipartFile, Integer usuarioId);
 
+    File saveImgCalled(MultipartFile multipartFile, Integer chamadoId);
 }
