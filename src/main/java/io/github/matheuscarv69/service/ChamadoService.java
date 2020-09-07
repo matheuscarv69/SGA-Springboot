@@ -18,7 +18,7 @@ public interface ChamadoService {
 
     List<InformacoesChamadoDTO> buscarPorPar(Chamado filtro1, FiltroChamadoDTO filtroDTO);
 
-    void atualizaStatus(Integer id, StatusChamado statusChamado);
+    void atualizaStatus(Integer id, StatusChamado statusChamado, String solucaoDTO);
 
     void atribuirTecn(Integer id, TecnicoDTO tecnicoDTO);
 

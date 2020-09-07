@@ -28,6 +28,9 @@ public class Chamado {
     @Column
     private String descricao;
 
+    @Column
+    private String solucao;
+
     @Enumerated(EnumType.STRING)
     private TipoChamado tipoChamado;
 

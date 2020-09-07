@@ -37,8 +37,9 @@ public class ChamadoController {
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id, @RequestBody @Valid AtualizacaoStatusChamadoDTO dto) {
         String novoStatus = dto.getNovoStatus();
+        String solucaoDTO = dto.getSolucao();
 
-        service.atualizaStatus(id, StatusChamado.valueOf(novoStatus));
+        service.atualizaStatus(id, StatusChamado.valueOf(novoStatus), solucaoDTO);
     }
 
     @DeleteMapping("/arqCham/{id}") // deleta um chamado pelo id

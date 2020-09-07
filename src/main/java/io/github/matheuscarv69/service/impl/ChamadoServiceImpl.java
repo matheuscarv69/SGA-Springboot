@@ -64,7 +64,17 @@ public class ChamadoServiceImpl implements ChamadoService {
 
     @Override
     @Transactional
-    public void atualizaStatus(Integer id, StatusChamado statusChamado) {
+    public void atualizaStatus(Integer id, StatusChamado statusChamado, String solucaoDTO) {
+        if(statusChamado == StatusChamado.SOLUCIONADO && solucaoDTO.isEmpty()){
+            throw new RegraNegocioException("Informe a solução.");
+        }
+
+        if(statusChamado != StatusChamado.SOLUCIONADO){
+            if(!solucaoDTO.isEmpty()){
+                throw new RegraNegocioException("O status do chamado é : " + statusChamado + ", dessa forma não pode receber uma solução.");
+            }
+        }
+
         repository
                 .findById(id)
                 .map(c -> {
@@ -76,10 +86,15 @@ public class ChamadoServiceImpl implements ChamadoService {
                         throw new RegraNegocioException("Nenhum técnico está atribuído");
                     }
 
-                    c.setStatusChamado(statusChamado);
+                    if(c.getStatusChamado() == statusChamado.SOLUCIONADO && !c.getSolucao().isEmpty()){
+                        throw new RegraNegocioException("O chamado já foi solucionado e finalizado, não é possível alterar o status");
+                    }else{
+                        c.setStatusChamado(statusChamado);
+                    }
 
                     if (statusChamado == StatusChamado.SOLUCIONADO) {
                         c.setDataFinal(LocalDate.now());
+                        c.setSolucao(solucaoDTO);
                     }
 
                     repository.save(c);
@@ -287,6 +302,7 @@ public class ChamadoServiceImpl implements ChamadoService {
     public final static InformacoesChamadoDTO converterChamadoParaInformacao(Chamado chamado) {
 
         String dataSolucao = new String();
+        String solucao = new String();
         String nomeTecn = new String();
         String matriculaTecn = new String();
 
@@ -297,11 +313,17 @@ public class ChamadoServiceImpl implements ChamadoService {
         }
 
         if (chamado.getTecnico() == null) {
-            nomeTecn = "Técnico não atribuído ao chamado.";
+            nomeTecn = "Nenhum Técnico atribuído ao chamado.";
             matriculaTecn = "";
         } else {
             nomeTecn = chamado.getTecnico().getNome();
             matriculaTecn = chamado.getTecnico().getMatricula();
+        }
+
+        if(chamado.getSolucao() == null || chamado.getSolucao().isEmpty()){
+            solucao = "Chamado ainda não foi solucionado.";
+        }else{
+            solucao = chamado.getSolucao();
         }
 
         return InformacoesChamadoDTO.builder()
@@ -316,6 +338,7 @@ public class ChamadoServiceImpl implements ChamadoService {
                 .status(chamado.getStatusChamado().name())
                 .dataInicio(chamado.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .dataSolucao(dataSolucao)
+                .solucao(solucao)
                 .tecnico(nomeTecn)
                 .matriculaTecn(matriculaTecn)
                 .ativo(chamado.isAtivo())

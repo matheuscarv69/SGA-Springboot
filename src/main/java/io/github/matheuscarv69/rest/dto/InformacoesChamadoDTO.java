@@ -22,6 +22,7 @@ public class InformacoesChamadoDTO {
     private String status;
     private String dataInicio;
     private String dataSolucao;
+    private String solucao;
     private String tecnico;
     private String matriculaTecn;
     private boolean ativo;
