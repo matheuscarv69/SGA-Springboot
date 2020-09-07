@@ -3,10 +3,7 @@ package io.github.matheuscarv69.service.impl;
 import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
-import io.github.matheuscarv69.exception.LoginNotFoundException;
-import io.github.matheuscarv69.exception.RegraNegocioException;
-import io.github.matheuscarv69.exception.SenhaInvalidaException;
-import io.github.matheuscarv69.exception.UsuarioNaoEncontradoException;
+import io.github.matheuscarv69.exception.*;
 import io.github.matheuscarv69.rest.dto.CredenciaisDTO;
 import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
 import io.github.matheuscarv69.rest.dto.TokenDTO;
@@ -99,10 +96,6 @@ public class UsuarioServiceImpl implements UsuarioService {
                         repository.save(usuario);
                         return usuario;
                     } else if (usuarioExistente.getMatricula().equals(user.getMatricula())) {
-                        System.out.println("Matrículas são iguais");
-                        System.out.println("User: " + user.getMatricula());
-                        System.out.println("UsuarioExistente: " + usuarioExistente.getMatricula());
-
                         usuario.setId(usuarioExistente.getId());
                         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
 
@@ -234,7 +227,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         if (user == null) {
             List<InformacoesChamadoDTO> list = new ArrayList<>();
-            return list;
+
+            throw new ChamadoNaoEncontradoException("O Usuário não efetuou nenhum chamado ainda");
         }
 
         List<Chamado> listaChamado = user.getChamadosReq();
@@ -262,7 +256,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         if (user == null) {
             List<InformacoesChamadoDTO> list = new ArrayList<>();
-            return list;
+            throw new ChamadoNaoEncontradoException("O Técnico não possui nenhum chamado atribuído");
         }
 
         List<Chamado> listaChamado = user.getChamadosTecn();

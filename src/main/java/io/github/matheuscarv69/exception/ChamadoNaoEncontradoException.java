@@ -6,4 +6,7 @@ public class ChamadoNaoEncontradoException extends RuntimeException {
         super("Chamado não encontrado.");
     }
 
+    public ChamadoNaoEncontradoException(String message) {
+        super(message);
+    }
 }
