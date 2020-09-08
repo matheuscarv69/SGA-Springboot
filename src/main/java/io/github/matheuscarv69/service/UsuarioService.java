@@ -1,9 +1,7 @@
 package io.github.matheuscarv69.service;
 
 import io.github.matheuscarv69.domain.entity.Usuario;
-import io.github.matheuscarv69.rest.dto.CredenciaisDTO;
-import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
-import io.github.matheuscarv69.rest.dto.TokenDTO;
+import io.github.matheuscarv69.rest.dto.*;
 
 import java.util.List;
 public interface UsuarioService {
@@ -22,9 +20,9 @@ public interface UsuarioService {
 
     List<Usuario> buscarAdministradores();
 
-    void setTecn(Integer id, Usuario tecn);
+    void setTecn(Integer id, BoolTecnicoDTO boolTecnDTO);
 
-    void setAdmin(Integer id, Usuario admin);
+    void setAdmin(Integer id, BoolAdministradorDTO admin);
 
     List<InformacoesChamadoDTO> buscarChamadosReq(Integer id);
 

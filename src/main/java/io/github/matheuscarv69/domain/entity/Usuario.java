@@ -52,7 +52,7 @@ public class Usuario {
 
     @JsonIgnore
     @Column
-    private byte[] imagem;
+    private byte[] imagem = null;
 
     @Column
     private boolean ativo = true;

@@ -76,10 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/api/usuarios/admin")
                 .hasRole("ADMIN")
                 // set tecnico ok
-                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setTecn/**")
+                    .antMatchers(HttpMethod.PATCH, "/api/usuarios/admin/setTecn/**")
                 .hasRole("ADMIN")
                 // set administradores ok
-                    .antMatchers(HttpMethod.PUT, "/api/usuarios/admin/setAdmin/**")
+                    .antMatchers(HttpMethod.PATCH, "/api/usuarios/admin/setAdmin/**")
                 .hasRole("ADMIN")
                 // busca chamados req ok
                     .antMatchers(HttpMethod.GET, "/api/usuarios/chamadosReq/**")

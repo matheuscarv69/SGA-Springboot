@@ -4,21 +4,16 @@ import io.github.matheuscarv69.domain.entity.Chamado;
 import io.github.matheuscarv69.domain.entity.Usuario;
 import io.github.matheuscarv69.domain.repository.UsuarioRepository;
 import io.github.matheuscarv69.exception.*;
-import io.github.matheuscarv69.rest.dto.CredenciaisDTO;
-import io.github.matheuscarv69.rest.dto.InformacoesChamadoDTO;
-import io.github.matheuscarv69.rest.dto.TokenDTO;
+import io.github.matheuscarv69.rest.dto.*;
 import io.github.matheuscarv69.security.jwt.JwtService;
 import io.github.matheuscarv69.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,16 +175,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override //ok
     @Transactional
-    public void setTecn(Integer id, Usuario tecn) {
+    public void setTecn(Integer id, BoolTecnicoDTO boolTecnDTO) {
         repository.findById(id)
                 .map(usuario -> {
                     if (!usuario.isAtivo()) {
                         throw new RegraNegocioException("O usuário não está ativo");
-                    } else if (usuario.isTecn() && tecn.isTecn()) {
+                    } else if (usuario.isTecn() && boolTecnDTO.isTecn()) {
                         throw new RegraNegocioException("Usuário já é técnico");
                     }
 
-                    usuario.setTecn(tecn.isTecn());
+                    usuario.setTecn(boolTecnDTO.isTecn());
                     repository.save(usuario);
 
                     return usuario;
@@ -199,7 +194,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override //ok
     @Transactional
-    public void setAdmin(Integer id, Usuario admin) {
+    public void setAdmin(Integer id, BoolAdministradorDTO admin) {
         repository.findById(id)
                 .map(usuario -> {
                     if (!usuario.isAtivo()) {
@@ -208,8 +203,14 @@ public class UsuarioServiceImpl implements UsuarioService {
                         throw new RegraNegocioException("Usuário já é administrador");
                     }
 
-                    usuario.setAdmin(admin.isAdmin());
-                    usuario.setTecn(true); // Em teste
+                    if(admin.isAdmin()){
+                        usuario.setAdmin(admin.isAdmin());
+                        usuario.setTecn(true);
+                    }else{
+                        usuario.setAdmin(admin.isAdmin());
+                        usuario.setTecn(false);
+                    }
+
                     repository.save(usuario);
 
                     return usuario;

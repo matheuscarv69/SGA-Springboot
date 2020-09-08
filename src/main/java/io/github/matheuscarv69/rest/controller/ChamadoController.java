@@ -5,6 +5,10 @@ import io.github.matheuscarv69.domain.enums.StatusChamado;
 import io.github.matheuscarv69.exception.ChamadoNaoEncontradoException;
 import io.github.matheuscarv69.rest.dto.*;
 import io.github.matheuscarv69.service.ChamadoService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,35 +31,72 @@ public class ChamadoController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Integer save(@RequestBody @Valid ChamadoDTO dto) {
+    @ApiOperation("Salvar um chamado")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Chamado cadastrado com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 403, message = "Acesso negado")
+    })
+    public Integer save(@RequestBody @ApiParam("Dados do Chamado") @Valid ChamadoDTO dto) {
         Chamado chamado = service.salvar(dto);
         return chamado.getId();
     }
 
-    @PatchMapping("/updt/{id}")
-//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @PatchMapping("/updt/{id}")//patchmapping só atualiza campos especificos do objeto, diferentemente do putmapping, onde todos os dados são atualizados
+    @ApiOperation("Atualizar status do Chamado")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Status do Chamado atualizado com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Chamado não encontrado")
+    })
     @ResponseStatus(NO_CONTENT)
-    public void updateStatus(@PathVariable Integer id, @RequestBody @Valid AtualizacaoStatusChamadoDTO dto) {
+    public void updateStatus(@PathVariable @ApiParam("Id do Chamado") Integer id, @RequestBody @ApiParam("Status e Solução do chamado") @Valid AtualizacaoStatusChamadoDTO dto) {
         String novoStatus = dto.getNovoStatus();
         String solucaoDTO = dto.getSolucao();
 
         service.atualizaStatus(id, StatusChamado.valueOf(novoStatus), solucaoDTO);
     }
 
-    @DeleteMapping("/arqCham/{id}") // deleta um chamado pelo id
+    @DeleteMapping("/arqCham/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void arquivarChamado(@PathVariable Integer id) {
+    @ApiOperation("Arquivar um Chamado")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Chamado arquivado com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Chamado não encontrado")
+
+    })
+    public void arquivarChamado(@PathVariable @ApiParam("Id do Chamado") Integer id) {
         service.arquivarChamado(id);
     }
 
     @PatchMapping("/desarqCham/{id}")
     @ResponseStatus(NO_CONTENT)
-    public void desarquivarChamado(@PathVariable Integer id) {
+    @ApiOperation("Desarquivar um Chamado")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Chamado desarquivado com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Chamado não encontrado")
+    })
+    public void desarquivarChamado(@PathVariable @ApiParam("Id do Chamado") Integer id) {
         service.desarquivarChamado(id);
     }
 
-    @GetMapping("/getId/{id}") // busca um chamado por id
-    public InformacoesChamadoDTO getById(@PathVariable Integer id) {
+    @GetMapping("/getId/{id}")
+    @ApiOperation("Buscar um Chamado pelo ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Chamado encontrado com sucesso"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Chamado não encontrado")
+    })
+    public InformacoesChamadoDTO getById(@PathVariable @ApiParam("Id do Chamado") Integer id) {
         return service
                 .buscarChamadoPorId(id)
                 .map(chamado -> converterChamadoParaInformacao(chamado))
@@ -64,19 +105,40 @@ public class ChamadoController {
     }
 
     @GetMapping // busca por parametro e todos
-    public List<InformacoesChamadoDTO> find(Chamado filtro, FiltroChamadoDTO filtroDTO) {
+    @ApiOperation("Buscar Usuários por Parâmetro e Buscar todos os chamados")
+    @ApiResponses({
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado")
+    })
+    public List<InformacoesChamadoDTO> buscarPorPar(Chamado filtro, FiltroChamadoDTO filtroDTO) {
         return service.buscarPorPar(filtro, filtroDTO);
     }
 
     @PatchMapping("/atribTecn/{id}")
     @ResponseStatus(OK)
-    public void atribTecn(@PathVariable Integer id, @RequestBody TecnicoDTO tecnicoDTO) {
+    @ApiOperation("Atribuir um Técnico à um Chamado")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Técnico atribuído com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Dados não encontrados")
+    })
+    public void atribTecn(@PathVariable @ApiParam("Id do Chamado") Integer id, @RequestBody @ApiParam("Id do Técnico") TecnicoDTO tecnicoDTO) {
         service.atribuirTecn(id, tecnicoDTO);
     }
 
     @PatchMapping("/removerTecn/{id}")
     @ResponseStatus(OK)
-    public void removerTecn(@PathVariable Integer id) {
+    @ApiOperation("Remover um Técnico de um Chamado")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Técnico removido do Chamado com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação"),
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Chamado não encontrados")
+    })
+    public void removerTecn(@PathVariable @ApiParam("Id do Chamado") Integer id) {
         service.removerTecn(id);
     }
 
