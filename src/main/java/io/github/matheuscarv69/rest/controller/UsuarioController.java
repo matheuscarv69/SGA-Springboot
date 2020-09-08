@@ -23,7 +23,7 @@ public class UsuarioController {
         this.service = service;
     }
 
-    @PostMapping // salva um user
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Salvar um Usuário")
     @ApiResponses({
@@ -35,7 +35,7 @@ public class UsuarioController {
         return user;
     }
 
-    @PutMapping("/updt/{id}") // atualiza um usuario
+    @PutMapping("/updt/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Atualizar um Usuário")
     @ApiResponses({
@@ -54,8 +54,10 @@ public class UsuarioController {
     @ApiResponses({
             @ApiResponse(code = 204, message = "Usuário desligado com sucesso"),
             @ApiResponse(code = 400, message = "Erro de validação"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
+
     })
     public void desligarUser(@PathVariable @ApiParam("Id do Usuário") Integer id) {
         service.desligarUser(id);
@@ -67,8 +69,9 @@ public class UsuarioController {
     @ApiResponses({
             @ApiResponse(code = 204, message = "Usuário ativado com sucesso"),
             @ApiResponse(code = 400, message = "Erro de validação"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
     })
     public void ativarUser(@PathVariable @ApiParam("Id do Usuário") Integer id) {
         service.ativarUser(id);
@@ -78,8 +81,9 @@ public class UsuarioController {
     @ApiOperation("Busca um Usuário pelo ID")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Usuário encontrado com sucesso"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
     })
     public Usuario getUsuarioById(@PathVariable @ApiParam("Id do Usuário") Integer id) {
         Usuario user = service.buscarUserPorId(id);
@@ -90,8 +94,9 @@ public class UsuarioController {
     @ApiOperation("Busca todos os Técnicos")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Técnicos encontrados com sucesso"),
-            @ApiResponse(code = 404, message = "Nenhum técnico encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Nenhum técnico encontrado")
     })
     public List<Usuario> findTecnicos() {
         return service.buscarTecnicos();
@@ -102,8 +107,9 @@ public class UsuarioController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Administradores encontrados com sucesso"),
             @ApiResponse(code = 400, message = "Erro de validação"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
     })
     public List<Usuario> findAdministradores() {
         return service.buscarAdministradores();
@@ -114,8 +120,9 @@ public class UsuarioController {
     @ApiOperation("Definir Usuário como Técnico")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Usuário definido como Técnico com sucesso"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
     })
     public void setTecn(@PathVariable @ApiParam("Id do Usuário") Integer id, @RequestBody @ApiParam("Propriedade de técnico") Usuario tecn) {
         service.setTecn(id, tecn);
@@ -127,8 +134,9 @@ public class UsuarioController {
     @ApiOperation("Definir Usuário como Administrador")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Usuário definido como Administrador com sucesso"),
-            @ApiResponse(code = 404, message = "Usuário não encontrado"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
     })
     public void setAdmin(@PathVariable @ApiParam("Id do Usuário") Integer id, @RequestBody  @ApiParam("Propriedade de Administrador") Usuario admin) {
         service.setAdmin(id, admin);
@@ -138,8 +146,8 @@ public class UsuarioController {
     @ApiOperation("Busca os Chamados que um Usuário fez")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Chamados do Usuário informado foram encontrados com sucesso"),
-            @ApiResponse(code = 404, message = "Dados não encontrados"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 404, message = "Dados não encontrados")
     })
     public List<InformacoesChamadoDTO> findChamadosReq(@PathVariable @ApiParam("Id do Usuário") Integer id) {
         return service.buscarChamadosReq(id);
@@ -149,8 +157,9 @@ public class UsuarioController {
     @ApiOperation("Busca os Chamados que um Técnico está atribuído")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Chamados do Técnico informado foram encontrados com sucesso"),
-            @ApiResponse(code = 404, message = "Dados não encontrados"),
-            @ApiResponse(code = 401, message = "Usuário não autorizado")
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado"),
+            @ApiResponse(code = 404, message = "Dados não encontrados")
     })
     public List<InformacoesChamadoDTO> findChamadosTecn(@PathVariable @ApiParam("Id do Usuário") Integer id) {
         return service.buscarChamadosTecn(id);
@@ -158,7 +167,10 @@ public class UsuarioController {
 
     @GetMapping // busca por parametros: No campo Query defina qual propriedade quer buscar
     @ApiOperation("Busca de Usuário por Parâmetro e Busca todos os Usuários")
-    @ApiResponse(code = 401, message = "Usuário não autorizado")
+    @ApiResponses({
+            @ApiResponse(code = 401, message = "Usuário não autorizado"),
+            @ApiResponse(code = 403, message = "Acesso negado")
+    })
     public List<Usuario> buscarPorPar(Usuario filtro) {
         return service.buscarPorPar(filtro);
     }

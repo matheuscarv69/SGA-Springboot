@@ -299,9 +299,5 @@ public class UsuarioServiceImpl implements UsuarioService {
         } catch (LoginNotFoundException e){
             throw new LoginNotFoundException();
         }
-//        catch (UsernameNotFoundException e) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-//        }
-
     }
 }
