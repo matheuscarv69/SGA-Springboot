@@ -36,7 +36,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("Sistema de Chamado de Ativos")
+                .title("Sistema de Chamado")
                 .description("API do sistema de chamados para manutenção de ativos de uma organização")
                 .version("1.0")
                 .contact(contact())
