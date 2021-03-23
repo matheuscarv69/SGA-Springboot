@@ -1,6 +1,6 @@
 # 💻 SGA - Sistema de Gerenciamento de Chamados de Ativos 👔
 
-Esta é a uma API Restful para gerenciamento de chamados, desde à criação como a atribuição de pessoas os chamados, usando autenticação JWT.
+Esta é uma API Restful para gerenciamento de chamados, ela atende desde a criação de chamados até a atribuição de pessoas para solucionar estes chamados, tudo isso utilizando os recursos da autenticação JWT.
  
 [![GitHub stars](https://img.shields.io/github/stars/matheuscarv69/app-servidor-server?color=7159)](https://github.com/matheuscarv69/app-servidor-server/stargazers)
 ![badges](https://img.shields.io/github/issues/matheuscarv69/app-servidor-server)
